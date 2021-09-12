@@ -1,0 +1,6 @@
+﻿{
+  "Token": [ "ODc2MTgwMzA3MTQzOTc0OTEz.YRgUfw.scsQbFP30s1D6AImZw9IA36L8II" ],
+  "Prefixes": [ "!" ],
+  "GitHub": [ "https://github.com/SapphireDisD/Ranker" ]
+}
+// Note, they are all arrays because Sapphire is dumb, but only prefixes can be multiple.
