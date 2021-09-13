@@ -12,8 +12,10 @@
     <None Remove="sqlite-net-pcl" />
     <None Remove="SixLabors.ImageSharp" />
     <None Remove="SixLabors.ImageSharp.Drawing" />
-    <None Remove="Fonts\" />
     <None Remove="Images\background.png" />
+    <None Remove="bootstrap" />
+    <None Remove="Views\Leaderboard\" />
+    <None Remove="Views\Error\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DSharpPlus" Version="4.1.0" />
@@ -24,6 +26,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Commands\" />
-    <Folder Include="Fonts\" />
+    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\Fonts\" />
+    <Folder Include="Views\Leaderboard\" />
+    <Folder Include="Views\Error\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\" />
+    <Content Remove="wwwroot\css\" />
+    <Content Remove="wwwroot\Fonts\" />
   </ItemGroup>
 </Project>

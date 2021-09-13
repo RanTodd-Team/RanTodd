@@ -37,43 +37,45 @@ namespace Ranker
             {
                 if (e.Message.Author.IsBot) return;
 
+                Rank rankO = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString());
+
                 long time;
                 int messages;
                 int levelXp;
                 int level;
                 int xp;
-                string username = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString())?.Username;
-                string discriminator = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString())?.Discriminator;
-                string avatar = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString())?.Avatar;
+                string username = rankO?.Username;
+                string discriminator = rankO?.Discriminator;
+                string avatar = rankO?.Avatar;
 
-                string timeR = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString())?.TimeR;
+                string timeR = rankO?.TimeR;
                 bool success1 = long.TryParse(timeR, out time);
                 if (!success1)
                 {
                     time = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 }
 
-                string messagesI = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString())?.Messasges;
+                string messagesI = rankO?.Messasges;
                 bool success2 = int.TryParse(messagesI, out messages);
                 if (!success2)
                 {
                     messages = 0;
                 }
 
-                string levelXpI = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString())?.LevelXp;
+                string levelXpI = rankO?.LevelXp;
                 bool success3 = int.TryParse(levelXpI, out levelXp);
                 if (!success3)
                 {
                     levelXp = 0;
                 }
 
-                string levelI = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString())?.Level;
+                string levelI = rankO?.Level;
                 bool success4 = int.TryParse(levelI, out level);
                 if (!success4)
                 {
                     level = 0;
                 }
-                string xpI = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString())?.Xp;
+                string xpI = rankO?.Xp;
                 bool success5 = int.TryParse(xpI, out xp);
                 if (!success5)
                 {
@@ -118,7 +120,7 @@ namespace Ranker
                 rank.Username = username;
                 rank.Discriminator = discriminator;
                 rank.Avatar = avatar;
-                var check = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString());
+                var check = rankO;
                 if (!String.IsNullOrEmpty(check?.Level))
                 {
                     rank.Id = check.Id;

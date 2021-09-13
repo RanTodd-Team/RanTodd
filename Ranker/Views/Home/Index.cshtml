@@ -1,10 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>@Bot.botUser.Username is a ranking Discord bot powered by .NET 5, ASP.NET Core, and DSharpPlus.</p>
-    <a href=@("https://discord.com/api/oauth2/authorize?client_id=" + Bot.botUser.Id + "&permissions=268437504&scope=bot%20applications.commands") target="_blank" class="btn btn-info">Invite</a>
-    <a href="@Program.JSON["GitHub"][0]" target="_blank" class="btn btn-success">GitHub</a>
+<div class="centerText">
+    <h1 class="marginFive">@Bot.botUser.Username</h1>
+    <p class="marginFive">@Bot.botUser.Username is a ranking Discord bot powered by .NET 5, ASP.NET Core, and DSharpPlus.</p>
+    <a href=@("https://discord.com/api/oauth2/authorize?client_id=" + Bot.botUser.Id + "&permissions=268437504&scope=bot%20applications.commands") target="_blank" class="button inviteButton marginFive">Invite</a>
+    <a href="@Program.JSON["GitHub"][0]" target="_blank" class="button githubButton marginFive">GitHub</a>
 </div>
