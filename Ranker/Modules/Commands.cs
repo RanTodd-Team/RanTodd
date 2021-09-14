@@ -45,7 +45,7 @@ namespace Ranker
             string username = rank.Username;
             string discriminator = rank.Discriminator;
             string pfpUrl = $"{rank.Avatar}";
-            ulong level = rank.Level;
+            ulong level = rank.Level + 1;
 
             ulong gottenXp = rank.Xp;
             ulong maxXp = rank.NextXp;
