@@ -79,7 +79,7 @@ namespace Ranker
             };
 
             image.Mutate(x =>
-                x.DrawText(options: drawingOptions, "Level " + (level + 1) + "   Rank #" + leader, font1, Color.White, new Point(934 - 47, 193 - 55)));
+                x.DrawText(options: drawingOptions, "Level " + level + "   Rank #" + leader, font1, Color.White, new Point(934 - 47, 193 - 55)));
 
             image.Mutate(x =>
                 x.DrawText(username, font2, Color.White, new Point(51, 215 - 30)));
