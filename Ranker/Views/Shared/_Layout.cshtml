@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @Bot.botUser.Username</title>
+    <title>@ViewData["Title"] - @Bot.botClient.CurrentUser.Username</title>
     <link href="~/css/style.css" rel="stylesheet" />
 </head>
 <body>
     <header>
-        <a asp-area="" asp-controller="Home" asp-action="Index">@Bot.botUser.Username</a>
+        <a asp-area="" asp-controller="Home" asp-action="Index">@Bot.botClient.CurrentUser.Username</a>
     </header>
     <div class="container">
         @RenderBody()

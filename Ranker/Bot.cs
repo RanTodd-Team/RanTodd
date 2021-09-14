@@ -10,34 +10,52 @@ namespace Ranker
 {
     public class Bot
     {
-        public static DiscordUser botUser;
+        public static DiscordClient botClient;
 
         public static async Task MainAsync(string[] args)
             {
-        var discord = new DiscordClient(new DiscordConfiguration()
-                {
-                    Token = Program.JSON["Token"][0],
-                    TokenType = TokenType.Bot
-                });
+
+            // Start and configure bot
+
+            var discord = new DiscordClient(new DiscordConfiguration()
+            {
+                Token = Program.JSON.Token,
+            TokenType = TokenType.Bot
+            });
 
             var commands = discord.UseCommandsNext(new CommandsNextConfiguration()
             {
-                StringPrefixes = Program.JSON["Prefixes"].ToArray()
-            });
+                StringPrefixes = Program.JSON.Prefixes
+        });
 
             commands.RegisterCommands<Commands.Module>();
 
-            discord.Ready += async (s, e) =>
+            discord.Ready += (s, e) =>
             {
-                botUser = ((DiscordClient)s).CurrentUser;
+                // Set client info to a variable and start website
+
+                    System.Diagnostics.Debug.WriteLine(((DiscordClient)s).Guilds.Keys);
+
+                    botClient = (DiscordClient)s;
                 new Task(() => Program.CreateHostBuilder(args).Build().Run()).Start();
+                return Task.CompletedTask;
+            };
+
+            discord.GuildCreated += async (s, e) =>
+            {
+                if (e.Guild.Id != Program.JSON.GuildId)
+                {
+                        // Leave group if in wrong server
+
+                        await e.Guild.LeaveAsync();
+                }
             };
 
             discord.MessageCreated += async (s, e) =>
             {
                 if (e.Message.Author.IsBot) return;
 
-                Rank rankO = Program.db.Table<Rank>().ToList().Find(x => x.UserId == e.Message.Author.Id.ToString() && x.GuildId == e.Message.Channel.GuildId.ToString());
+                Rank rankO = Program.db.Table<Rank>().ToList().Find(x => x.Id == e.Message.Author.Id.ToString());
 
                 long time;
                 int messages;
@@ -47,6 +65,8 @@ namespace Ranker
                 string username = rankO?.Username;
                 string discriminator = rankO?.Discriminator;
                 string avatar = rankO?.Avatar;
+
+                // Fetch database data, create if it doesn't exist
 
                 string timeR = rankO?.TimeR;
                 bool success1 = long.TryParse(timeR, out time);
@@ -82,6 +102,10 @@ namespace Ranker
                     xp = 0;
                 }
 
+                int neededXp = Convert.ToInt32(5 * Math.Pow(level, 2) + (50 * level) + 100);
+
+                // XP system
+
                 if (levelXp == 0)
                 {
                     int randomThingy = new Random().Next(15, 25);
@@ -96,39 +120,62 @@ namespace Ranker
                     messages += 1;
                 }
 
-                int needed = (level + 1) * 100;
+                Rank rank = new Rank();
 
-                if (levelXp > needed)
+                // Level up system
+
+                if (levelXp > neededXp)
                 {
-                    levelXp -= needed;
+                    levelXp -= neededXp;
                     level++;
+                    Dictionary<string, ulong> roles = Program.JSON.Roles;
+                    if(roles.ContainsKey(level.ToString()))
+                    {
+                        try {
+                            DiscordMember member = await e.Message.Channel.Guild.GetMemberAsync(e.Message.Author.Id);
+
+                            // Add role
+
+                            DiscordRole role = e.Message.Channel.Guild.GetRole(roles[level.ToString()]);
+                            await member.GrantRoleAsync(role);
+
+                            // Remove old role
+
+                            foreach (ulong roleO in Program.JSON.Roles.Values)
+                            {
+                                if (roleO != roles[level.ToString()])
+                                {
+                                    DiscordRole roleAO = e.Message.Channel.Guild.GetRole(roleO);
+                                    await member.RevokeRoleAsync(roleAO);
+                                }
+                            }
+                        } catch { } // Do nothing if we can't get the member or add the role
+                    }
                 }
 
-                messages += 1;
+                // Fetch user data (so if they leave the guild, we still have it avaliable)
 
                 username = e.Message.Author.Username;
                 discriminator = e.Message.Author.Discriminator;
                 avatar = e.Message.Author.AvatarHash;
 
-                Rank rank = new Rank();
-                rank.UserId = e.Message.Author.Id.ToString();
-                rank.GuildId = e.Message.Channel.GuildId.ToString();
+                // Create and set rank object
+
+                rank.Id = e.Message.Author.Id.ToString();
                 rank.TimeR = time.ToString();
                 rank.LevelXp = levelXp.ToString();
                 rank.Level = level.ToString();
                 rank.Xp = xp.ToString();
+                rank.NeededXp = neededXp.ToString();
                 rank.Username = username;
                 rank.Discriminator = discriminator;
                 rank.Avatar = avatar;
-                var check = rankO;
-                if (!String.IsNullOrEmpty(check?.Level))
+
+                if (!String.IsNullOrEmpty(rankO?.Level))
                 {
-                    rank.Id = check.Id;
                     Program.db.Update(rank);
-                }
-                else
+                } else
                 {
-                    rank.Id = Guid.NewGuid().ToString();
                     Program.db.Insert(rank);
                 }
             };
