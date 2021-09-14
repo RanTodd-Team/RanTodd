@@ -26,11 +26,11 @@ namespace Ranker
         }
 
 
-        /*[Command("rank")]
+        [Command("rank")]
         public async Task RankCommand(CommandContext ctx, DiscordMember member)
         {
             await Rank(ctx, member.Id);
-        }*/
+        }
 
         [Command("rank")]
         public async Task RankCommand(CommandContext ctx)
