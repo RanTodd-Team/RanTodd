@@ -1,5 +1,4 @@
-﻿using SQLite;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ namespace Ranker
 {
     public class Rank
     {
-        [PrimaryKey]
         public string Id => $"{Guild}/{User}";
 
         public DateTimeOffset LastCreditDate { get; set; } = DateTimeOffset.UnixEpoch;
