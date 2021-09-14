@@ -56,12 +56,6 @@ namespace Ranker
                 if (e.Message.Author.IsBot) return;
 
                 Rank rankO = Program.db.Table<Rank>().ToList().Find(x => x.Id == e.Message.Author.Id.ToString());
-
-                long time;
-                int messages;
-                int levelXp;
-                int level;
-                int xp;
                 string username = rankO?.Username;
                 string discriminator = rankO?.Discriminator;
                 string avatar = rankO?.Avatar;
@@ -69,38 +63,15 @@ namespace Ranker
                 // Fetch database data, create if it doesn't exist
 
                 string timeR = rankO?.TimeR;
-                bool success1 = long.TryParse(timeR, out time);
-                if (!success1)
-                {
-                    time = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-                }
+                long time = long.Parse(timeR ?? DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString());
 
-                string messagesI = rankO?.Messasges;
-                bool success2 = int.TryParse(messagesI, out messages);
-                if (!success2)
-                {
-                    messages = 0;
-                }
+                int messages = int.Parse(rankO?.Messasges ?? "0");
 
-                string levelXpI = rankO?.LevelXp;
-                bool success3 = int.TryParse(levelXpI, out levelXp);
-                if (!success3)
-                {
-                    levelXp = 0;
-                }
+                int levelXp = int.Parse(rankO?.LevelXp ?? "0");
 
-                string levelI = rankO?.Level;
-                bool success4 = int.TryParse(levelI, out level);
-                if (!success4)
-                {
-                    level = 0;
-                }
-                string xpI = rankO?.Xp;
-                bool success5 = int.TryParse(xpI, out xp);
-                if (!success5)
-                {
-                    xp = 0;
-                }
+                int level = int.Parse(rankO?.Level ?? "0");
+
+                int xp = int.Parse(rankO?.Xp ?? "0");
 
                 int neededXp = Convert.ToInt32(5 * Math.Pow(level, 2) + (50 * level) + 100);
 

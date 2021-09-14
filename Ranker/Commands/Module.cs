@@ -25,7 +25,7 @@ namespace Ranker.Commands
         [Command("rank")]
         public async Task RankCommand(CommandContext ctx, DiscordMember member)
         {
-            await Rank(ctx, member.Id.ToString());
+                await Rank(ctx, member.Id.ToString());
         }
 
         // Else...
@@ -133,7 +133,11 @@ namespace Ranker.Commands
 
                 // Draw profile picture
 
-                var propic = Image.Load(new WebClient().DownloadData(pfpUrl));
+                var propic = Image.Load(new WebClient().DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
+                try
+                {
+                    propic = Image.Load(new WebClient().DownloadData(pfpUrl));
+                } catch { }
 
                 propic.Mutate(x => x.Resize(new ResizeOptions()
                 {
