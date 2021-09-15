@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Error\**" />
+    <Compile Remove="Views\Leaderboard\**" />
+    <Content Remove="Views\Error\**" />
+    <Content Remove="Views\Leaderboard\**" />
+    <EmbeddedResource Remove="Views\Error\**" />
+    <EmbeddedResource Remove="Views\Leaderboard\**" />
+    <None Remove="Views\Error\**" />
+    <None Remove="Views\Leaderboard\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="DSharpPlus" />
     <None Remove="Commands\" />
     <None Remove="DSharpPlus.CommandsNext" />
@@ -25,12 +36,9 @@
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\" />
     <Folder Include="wwwroot\" />
     <Folder Include="wwwroot\css\" />
     <Folder Include="wwwroot\Fonts\" />
-    <Folder Include="Views\Leaderboard\" />
-    <Folder Include="Views\Error\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />
