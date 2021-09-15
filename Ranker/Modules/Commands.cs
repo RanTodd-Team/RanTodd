@@ -93,7 +93,7 @@ namespace Ranker
                 x.DrawText(drawingOptions, gottenXp + "/" + maxXp, font4, Color.White, new Point(934 - 47, 223 - 30)));
 
             var paths = Extentions.GoodBuildCorners(836, 5, 4).Transform(Matrix3x2.CreateTranslation(51, 179));
-            var paths2 = Extentions.GoodBuildCorners((int)(678 * (gottenXp * 100 / ((level + 1) * 100))) / 100, 5, 4).Transform(Matrix3x2.CreateTranslation(51, 179));
+            var paths2 = Extentions.GoodBuildCorners((int)(678 * (gottenXp * 100 / maxXp)) / 100, 5, 4).Transform(Matrix3x2.CreateTranslation(51, 179));
 
             image.Mutate(x => x.Fill(Color.White, paths));
             image.Mutate(x => x.Fill(Color.FromRgb(0, 166, 234), paths2));
