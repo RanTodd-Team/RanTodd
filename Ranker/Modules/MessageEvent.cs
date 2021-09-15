@@ -53,11 +53,14 @@ namespace Ranker
             
             if (e.Message.CreationTimestamp >= rank.LastCreditDate.AddMinutes(1))
             {
-                rank.Xp += Convert.ToUInt64(new Random().Next(15, 25));
+                ulong newXp = Convert.ToUInt64(new Random().Next(15, 26));
+                rank.Xp += newXp;
+                rank.TotalXp += newXp;
                 rank.LastCreditDate = e.Message.CreationTimestamp;
                 if (rank.Xp >= rank.NextXp)
                 {
                     rank.Level += 1;
+                    rank.Xp = 0;
                     rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * rank.Level) + 100);
                 }
             }
