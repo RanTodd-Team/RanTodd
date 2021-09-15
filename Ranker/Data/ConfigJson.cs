@@ -14,7 +14,12 @@ namespace Ranker
 
         public string[] Prefixes { get; set; }
 
-        // Idk why it is here but it is so ¯\_(ツ)_/¯
         public string GitHub { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public ulong? GuildId { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public ulong[] IgnoredChannelIds { get; set; }
     }
 }
