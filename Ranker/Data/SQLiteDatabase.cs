@@ -27,6 +27,7 @@ namespace Ranker
                 Xp = rank.Xp.ToString();
                 User = rank.User.ToString();
                 Guild = rank.Guild.ToString();
+                TotalXp = rank.TotalXp.ToString();
                 Username = rank.Username;
                 Discriminator = rank.Discriminator;
                 Avatar = rank.Avatar;
@@ -54,6 +55,8 @@ namespace Ranker
             public string Discriminator { get; set; }
 
             public string Avatar { get; set; }
+            
+            public string TotalXp { get; set; }
 
             public Rank ToRank()
             {
@@ -68,7 +71,8 @@ namespace Ranker
                     Discriminator = Discriminator,
                     Avatar = Avatar,
                     User = ulong.Parse(User),
-                    Guild = ulong.Parse(Guild)
+                    Guild = ulong.Parse(Guild),
+                    TotalXp = ulong.Parse(TotalXp)
                 };
             }
         }
