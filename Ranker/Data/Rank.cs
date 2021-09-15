@@ -16,6 +16,8 @@ namespace Ranker
         public ulong NextXp { get; set; } = 100;
 
         public ulong Level { get; set; }
+        
+        public ulong TotalXp { get; set; }
 
         public ulong Xp { get; set; }
 
