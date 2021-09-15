@@ -37,6 +37,9 @@ namespace Ranker
                 await e.Guild.LeaveAsync();
                 e.Handled = true;
             }
+
+            // Otherwise add non-bot members
+            await _database.AddNonExistentMembers(e.Guild.Members.Where(f => !f.Value.IsBot).Select(f => f.Value));
         }
 
         private async Task Client_GuildMemberUpdated(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs e)
@@ -68,7 +71,7 @@ namespace Ranker
 
         private async Task Client_MessageCreated(DiscordClient sender, DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
-            if (_config.IgnoredChannelIds.Contains(e.Channel.Id))
+            if (_config.IgnoredChannelIds != null && _config.IgnoredChannelIds.Contains(e.Channel.Id))
             {
                 // Let's just ignore this channel.
                 return;

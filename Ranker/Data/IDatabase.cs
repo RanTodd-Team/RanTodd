@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DSharpPlus.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,5 +25,11 @@ namespace Ranker
         /// </summary>
         /// <param name="newRank">The new rank.</param>
         Task UpsertAsync(ulong userId, ulong guildId, Rank newRank);
+
+        /// <summary>
+        /// Add non-existent members
+        /// </summary>
+        /// <param name="members">List of members to add.</param>
+        Task AddNonExistentMembers(IEnumerable<DiscordMember> members);
     }
 }

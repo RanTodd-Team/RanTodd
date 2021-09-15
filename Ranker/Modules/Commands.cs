@@ -42,9 +42,9 @@ namespace Ranker
         {
             Rank rank = await _database.GetAsync(userId, ctx.Guild.Id);
 
-            string username = rank.Username;
-            string discriminator = rank.Discriminator;
-            string pfpUrl = $"{rank.Avatar}";
+            string username = rank.Username ?? ctx.User.Username;
+            string discriminator = rank.Discriminator ?? ctx.User.Discriminator;
+            string pfpUrl = $"{rank.Avatar ?? ctx.User.AvatarUrl}";
             ulong level = rank.Level;
 
             ulong gottenXp = rank.Xp;
@@ -55,8 +55,8 @@ namespace Ranker
             int leader = list.IndexOf(list.FirstOrDefault(f => f.User == userId)) + 1;
 
             Image<Rgba32> image = new Image<Rgba32>(934, 282);
-            var img = Image.Load("./Images/Background.png");
-            image.Mutate(x => x.DrawImage(img, new Point(0, 0), 1));
+            /*var img = Image.Load("./Images/Background.png");
+            image.Mutate(x => x.DrawImage(img, new Point(0, 0), 1));*/
 
             var rect = new Rectangle(0, 0, 10, 382);
             image.Mutate(x => x.Fill(Color.FromRgb(0, 166, 234), rect));
