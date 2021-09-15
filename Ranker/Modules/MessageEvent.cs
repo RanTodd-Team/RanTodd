@@ -58,7 +58,7 @@ namespace Ranker
                 if (rank.Xp >= rank.NextXp)
                 {
                     rank.Level += 1;
-                    rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * rank.Level) + 100);
+                    rank.NextXp += Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * rank.Level) + 100);
                 }
             }
 
