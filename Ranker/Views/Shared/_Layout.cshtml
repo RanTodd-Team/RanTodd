@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="~/css/style.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <a asp-area="" asp-controller="Home" asp-action="Index">Hello!</a>
+    </header>
+    <div class="container">
+        @RenderBody()
+    </div>
+</body>
+</html>
