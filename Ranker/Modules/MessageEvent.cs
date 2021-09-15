@@ -53,7 +53,7 @@ namespace Ranker
             
             if (e.Message.CreationTimestamp >= rank.LastCreditDate.AddMinutes(1))
             {
-                rank.Xp += 1;
+                rank.Xp += Convert.ToUInt64(new Random().Next(15, 25));
                 rank.LastCreditDate = e.Message.CreationTimestamp;
                 if (rank.Xp >= rank.NextXp)
                 {
