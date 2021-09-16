@@ -9,10 +9,12 @@ namespace Ranker
     public class MessageEvent : BaseExtension
     {
         private readonly IDatabase _database;
+        private readonly ConfigJson _config;
 
-        public MessageEvent(IDatabase database)
+        public MessageEvent(IDatabase database, ConfigJson config)
         {
             _database = database;
+            _config = config;
         }
 
         protected override void Setup(DiscordClient client)
@@ -20,10 +22,31 @@ namespace Ranker
             client.GuildMemberAdded += Client_GuildMemberAdded;
             client.GuildMemberUpdated += Client_GuildMemberUpdated;
             client.MessageCreated += Client_MessageCreated;
+            client.GuildCreated += Client_GuildCreated;
+        }
+
+        private async Task Client_GuildCreated(DiscordClient sender, DSharpPlus.EventArgs.GuildCreateEventArgs e)
+        {
+            // Checks if:
+            // 1. There is a server ID specified.
+            // 2. If the specified server ID is valid.
+            // 3. The joined server is the same one we want to.
+            if (_config.GuildId != null && _config.GuildId >= 4194304 && _config.GuildId != e.Guild.Id)
+            {
+                // We entered into a wrong server, leave it.
+                await e.Guild.LeaveAsync();
+                e.Handled = true;
+            }
+
+            // Otherwise add non-bot members
+            await _database.AddNonExistentMembers(e.Guild.Members.Where(f => !f.Value.IsBot).Select(f => f.Value));
         }
 
         private async Task Client_GuildMemberUpdated(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs e)
         {
+            if (e.Member.IsBot)
+                return;
+
             Rank rank = await _database.GetAsync(e.Member.Id, e.Guild.Id);
             rank.Avatar = e.Member.GuildAvatarUrl;
             rank.Discriminator = e.Member.Discriminator;
@@ -33,6 +56,9 @@ namespace Ranker
 
         private async Task Client_GuildMemberAdded(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberAddEventArgs e)
         {
+            if (e.Member.IsBot)
+                return;
+
             Rank rank = new()
             {
                 Avatar = e.Member.AvatarUrl,
@@ -45,6 +71,18 @@ namespace Ranker
 
         private async Task Client_MessageCreated(DiscordClient sender, DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
+            if (_config.IgnoredChannelIds != null && _config.IgnoredChannelIds.Contains(e.Channel.Id))
+            {
+                // Let's just ignore this channel.
+                return;
+            }
+
+            if (e.Author.IsBot)
+            {
+                // Author is bot, ignore it.
+                return;
+            }
+
             Rank rank = await _database.GetAsync(e.Author.Id, e.Guild.Id);
             rank.Avatar = e.Author.AvatarUrl;
             rank.Username = e.Author.Username;

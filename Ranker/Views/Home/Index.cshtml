@@ -1,8 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Home";
 }
+@using Ranker
+@inject ConfigJson Config
 
 <div class="centerText">
     <h1 class="marginFive">Ranker</h1>
     <p class="marginFive">Ranker is a ranking Discord bot powered by .NET 5, ASP.NET Core, and DSharpPlus.</p>
+    <a href="@Config.GitHub" target="_blank" class="button githubButton marginFive">GitHub</a>
 </div>

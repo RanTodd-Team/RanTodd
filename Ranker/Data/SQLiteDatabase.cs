@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using DSharpPlus.Entities;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -114,6 +115,27 @@ namespace Ranker
                     db.Insert(new SQLiteData(newRank));
                 }
             });
+        }
+
+        public async Task AddNonExistentMembers(IEnumerable<DiscordMember> members)
+        {
+            var list = db.Table<SQLiteData>().ToList();
+            foreach (var member in members)
+            {
+                bool isNonExistent = list.Find(f => f.Id == $"{member.Guild.Id}/{member.Id}") == null;
+                if (isNonExistent)
+                {
+                    Rank rank = new()
+                    {
+                        Avatar = member.AvatarUrl,
+                        Discriminator = member.Discriminator,
+                        Guild = member.Guild.Id,
+                        User = member.Id,
+                        Username = member.Username
+                    };
+                    await UpsertAsync(member.Id, member.Guild.Id, rank);
+                }
+            }
         }
     }
 }
