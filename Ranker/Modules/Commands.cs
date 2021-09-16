@@ -43,9 +43,6 @@ namespace Ranker
             string username = rank.Username ?? ctx.User.Username;
             string discriminator = rank.Discriminator ?? ctx.User.Discriminator;
             string pfpUrl = $"{rank.Avatar ?? ctx.User.AvatarUrl}";
-            string username = rank.Username;
-            string discriminator = rank.Discriminator;
-            string pfpUrl = rank.Avatar;
             ulong level = rank.Level;
 
             ulong gottenXp = rank.Xp;
