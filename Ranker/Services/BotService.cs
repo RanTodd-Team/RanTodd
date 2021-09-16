@@ -1,5 +1,5 @@
 ﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -41,13 +41,12 @@ namespace Ranker
             var servCollection = new ServiceCollection();
             servCollection.AddSingleton(_database);
 
-            var commandsNext = client.UseCommandsNext(new()
+            var slashCommands = client.UseSlashCommands(new()
             {
-                StringPrefixes = _configJson.Prefixes,
                 Services = servCollection.BuildServiceProvider()
             });
 
-            commandsNext.RegisterCommands<Commands>();
+            slashCommands.RegisterCommands<Commands>(859414636554223626); // ID is temporal for testing reasons
 
             await client.ConnectAsync();
         }
