@@ -43,9 +43,10 @@ namespace Ranker
 
             Rank rank = await _database.GetAsync(userId, ctx.Guild.Id);
 
-            string username = rank.Username;
-            string discriminator = rank.Discriminator;
-            string pfpUrl = rank.Avatar;
+            DiscordUser user = await ctx.Client.GetUserAsync(userId);
+            string username = rank.Username ?? user.Username;
+            string discriminator = rank.Discriminator ?? user.Discriminator;
+            string pfpUrl = rank.Avatar ?? user.AvatarUrl;
             ulong level = rank.Level;
 
             ulong gottenXp = rank.Xp;
