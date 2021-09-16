@@ -12,12 +12,9 @@ namespace Ranker
         [Obsolete]
         public string Token { get; set; }
 
-        public ulong GuildId { get; set; }
+        public ulong? GuildId { get; set; }
 
         public string GitHub { get; set; }
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public ulong? GuildId { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ulong[] IgnoredChannelIds { get; set; }
