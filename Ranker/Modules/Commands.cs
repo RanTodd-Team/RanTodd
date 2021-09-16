@@ -27,10 +27,9 @@ namespace Ranker
         }
 
 
-        [SlashCommand("rank", "Check your rank or a user's")]
+        [SlashCommand("rank", "View the rank of a user.")]
         public async Task RankCommand(InteractionContext ctx, [Option("user", "User to view ranks for")] DiscordUser user = null)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             if (user == null)
                 user = ctx.User;
             await Rank(ctx, user.Id);
@@ -38,11 +37,16 @@ namespace Ranker
 
         public async Task Rank(InteractionContext ctx, ulong userId)
         {
+            await ctx.CreateResponseAsync(
+                InteractionResponseType.DeferredChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AsEphemeral(true));
+
             Rank rank = await _database.GetAsync(userId, ctx.Guild.Id);
 
-            string username = rank.Username ?? ctx.User.Username;
-            string discriminator = rank.Discriminator ?? ctx.User.Discriminator;
-            string pfpUrl = $"{rank.Avatar ?? ctx.User.AvatarUrl}";
+            DiscordUser user = await ctx.Client.GetUserAsync(userId);
+            string username = rank.Username ?? user.Username;
+            string discriminator = rank.Discriminator ?? user.Discriminator;
+            string pfpUrl = rank.Avatar ?? user.AvatarUrl;
             ulong level = rank.Level;
 
             ulong gottenXp = rank.Xp;
@@ -53,11 +57,6 @@ namespace Ranker
             int leader = list.IndexOf(list.FirstOrDefault(f => f.User == userId)) + 1;
 
             Image<Rgba32> image = new Image<Rgba32>(934, 282);
-            /*var img = Image.Load("./Images/Background.png");
-            image.Mutate(x => x.DrawImage(img, new Point(0, 0), 1));*/
-
-            var rect = new Rectangle(0, 0, 10, 382);
-            image.Mutate(x => x.Fill(Color.FromRgb(0, 166, 234), rect));
             var background = new Rectangle();
             image.Mutate(x => x.Fill(Color.Black, background));
 
@@ -88,9 +87,13 @@ namespace Ranker
 
             try
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile("rank.png", stream));
+                await ctx.Member.SendMessageAsync(new DiscordMessageBuilder().WithFile("rank.png", stream));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("I have sent the rank card to you via DM."));
             }
-            catch { }
+            catch
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, but I cannot send a DM to you. Can you check if DM from members is enabled?"));
+            }
         }
     }
 }
