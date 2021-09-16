@@ -12,7 +12,7 @@ namespace Ranker
         [Obsolete]
         public string Token { get; set; }
 
-        public string[] Prefixes { get; set; }
+        public ulong GuildId { get; set; }
 
         // Idk why it is here but it is so ¯\_(ツ)_/¯
         public string GitHub { get; set; }

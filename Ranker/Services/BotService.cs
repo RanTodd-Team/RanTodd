@@ -46,7 +46,7 @@ namespace Ranker
                 Services = servCollection.BuildServiceProvider()
             });
 
-            slashCommands.RegisterCommands<Commands>(859414636554223626); // ID is temporal for testing reasons
+            slashCommands.RegisterCommands<Commands>(_configJson.GuildId); // ID is temporal for testing reasons
 
             await client.ConnectAsync();
         }

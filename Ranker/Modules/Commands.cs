@@ -27,10 +27,9 @@ namespace Ranker
         }
 
 
-        [SlashCommand("rank", "Check your rank or a user's")]
+        [SlashCommand("rank", "View the rank of a user.")]
         public async Task RankCommand(InteractionContext ctx, [Option("user", "User to view ranks for")] DiscordUser user = null)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             if (user == null)
                 user = ctx.User;
             await Rank(ctx, user.Id);
@@ -38,6 +37,10 @@ namespace Ranker
 
         public async Task Rank(InteractionContext ctx, ulong userId)
         {
+            await ctx.CreateResponseAsync(
+                InteractionResponseType.DeferredChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AsEphemeral(true));
+
             Rank rank = await _database.GetAsync(userId, ctx.Guild.Id);
 
             string username = rank.Username;
@@ -83,9 +86,13 @@ namespace Ranker
 
             try
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddFile("rank.png", stream));
+                await ctx.Member.SendMessageAsync(new DiscordMessageBuilder().WithFile("rank.png", stream));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("I have sent the rank card to you via DM."));
             }
-            catch { }
+            catch
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, but I cannot send a DM to you. Can you check if DM from members is enabled?"));
+            }
         }
     }
 }
