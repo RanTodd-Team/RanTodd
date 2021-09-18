@@ -31,6 +31,7 @@ namespace Ranker
                 Username = rank.Username;
                 Discriminator = rank.Discriminator;
                 Avatar = rank.Avatar;
+                Fleuron = rank.Fleuron.ToString();
             }
 
             [PrimaryKey]
@@ -58,6 +59,8 @@ namespace Ranker
             
             public string TotalXp { get; set; }
 
+            public string Fleuron { get; set; }
+
             public Rank ToRank()
             {
                 return new Rank()
@@ -72,7 +75,8 @@ namespace Ranker
                     Avatar = Avatar,
                     User = ulong.Parse(User),
                     Guild = ulong.Parse(Guild),
-                    TotalXp = ulong.Parse(TotalXp)
+                    TotalXp = ulong.Parse(TotalXp),
+                    Fleuron = bool.Parse(Fleuron)
                 };
             }
         }

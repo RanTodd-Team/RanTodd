@@ -17,6 +17,25 @@
     <None Remove="Views\Error\**" />
     <None Remove="Views\Leaderboard\**" />
     <None Remove="IDoEverything.DSharpPlus.SlashCommands" />
+    <None Remove="Fonts\metropolis\Metropolis-Light.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-Regular.ttf" />
+    <None Remove="Fonts\metropolis\SIL Open Font License.txt" />
+    <None Remove="Fonts\metropolis\Metropolis-RegularItalic.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-ExtraBold.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-SemiBoldItalic.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-Thin.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-Bold.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-ExtraBoldItalic.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-ThinItalic.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-ExtraLight.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-SemiBold.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-LightItalic.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-MediumItalic.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-BoldItalic.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-ExtraLightItalic.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-Medium.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-BlackItalic.ttf" />
+    <None Remove="Fonts\metropolis\Metropolis-Black.ttf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,7 +55,7 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
-    <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-00990" />
+    <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-00995" />
     <PackageReference Include="IDoEverything.DSharpPlus.SlashCommands" Version="2.0.3" />
   </ItemGroup>
   <ItemGroup>

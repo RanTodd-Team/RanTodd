@@ -9,7 +9,7 @@ namespace Ranker
 {
     public class Extentions
     {
-        // Made by @Ahmed605
+        // By @Ahmed605
 
         public static IPathCollection GoodBuildCorners(int imageWidth, int imageHeight, float cornerRadius)
         {
@@ -25,11 +25,11 @@ namespace Ranker
             return new PathCollection(corner1, corner2, corner3, corner4, rect1, rect2, rect3);
         }
 
-        public static Image RoundCorners(Image<Rgba32> image)
+        public static Image RoundCorners(Image<Rgba32> image, int? radius)
         {
             int imageWidth = image.Width;
             int imageHeight = image.Height;
-            int cornerRadius = (imageWidth + imageHeight) / 2 / 2;
+            int cornerRadius = radius ?? ((imageWidth + imageHeight) / 2 / 2);
             var rect = new RectangularPolygon(-0.5f, -0.5f, cornerRadius, cornerRadius);
 
             IPath cornerTopLeft = rect.Clip(new EllipsePolygon(cornerRadius - 0.5f, cornerRadius - 0.5f, cornerRadius));

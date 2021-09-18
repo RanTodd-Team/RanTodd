@@ -30,5 +30,7 @@ namespace Ranker
         public string Discriminator { get; set; }
 
         public string Avatar { get; set; }
+
+        public bool Fleuron { get; set; }
     }
 }
