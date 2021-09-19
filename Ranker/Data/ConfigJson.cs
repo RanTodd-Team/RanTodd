@@ -13,7 +13,5 @@ namespace Ranker
         public string Token { get; set; }
 
         public ulong? GuildId { get; set; }
-
-        public string GitHub { get; set; }
     }
 }
