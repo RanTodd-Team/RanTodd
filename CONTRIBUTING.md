@@ -8,8 +8,10 @@ This project welcomes contributions of all types, but we need our contributors t
 Our code style is pretty simple. And we explain it here:
 1. Use lowercase on  (example: string instead of String)
 2. Open the curly brackets after a line break, example:
-  if (true)
-  {
-    return false;
-  }
+```
+if (true)
+{
+  return false;
+}
+```
 3. Sapphire had no idea of what to write in this entire section so this will change
