@@ -5,7 +5,7 @@
 2. In the Developer Portal page, select **New Application**.
 
    <img src="../images/get-started/fig1.png" width="400">
-3. Name the application.
+3. Name the application and choose **Create**.
 
    <img src="../images/get-started/fig2.png" width="400">
 4. Select **Bot**.
