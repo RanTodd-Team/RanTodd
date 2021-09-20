@@ -1,6 +1,6 @@
 # Contributing
 This project welcomes contributions of all types, but we need our contributors to follow these guidelines:
-1. Check the current issues before making a new one or starting developing something that may be already be in work by somebody else
+1. Check the current issues before making a new one or starting developing something that may already be in work by somebody else
 2. Suggest stuff that it's useful, don't troll
 3. Follow our code style
 
