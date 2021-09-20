@@ -6,7 +6,7 @@
 3. Rename `config.example.json` to `config.json`.
 4. Open the `config.json` file.
 5. (Optionally but highly recommended for testing scenarios or one-server setup) Edit the `GuildId` JSON field to your server ID.
-6. Opend a command line window and `cd` to Ranker.
+6. Open a command line window and `cd` to Ranker.
 7. Execute `dotnet build` and wait for the build to finish.
 8. Execute `dotnet run` to run the bot.
 
