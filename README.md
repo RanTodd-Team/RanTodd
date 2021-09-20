@@ -5,7 +5,7 @@
 Ranker is a Discord ranking bot originally designed for Microsoft Community. It offers from a simple rank card to a complex leaderboard.
 
 # How to self-host?
-You can get started [here](/docs/ddev.md)
+You can get started [here](/docs/get-started/ddev.md)
 
 # Contributors
 We'd like to thank our contributors for making this possible. 
