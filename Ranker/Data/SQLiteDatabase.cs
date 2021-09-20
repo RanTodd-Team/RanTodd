@@ -81,15 +81,49 @@ namespace Ranker
             }
         }
 
+        [Table("RolesData")]
+        public class SQLiteData2
+        {
+            public SQLiteData2()
+            { }
+
+            public SQLiteData2(Role role)
+            {
+                Level = role.Level.ToString();
+                Id = role.Id.ToString();
+            }
+
+            [PrimaryKey]
+            public string Level { get; set; }
+
+            public string Id { get; set; }
+
+
+            public Role ToRole()
+            {
+                return new Role()
+                {
+                    Level = ulong.Parse(Level),
+                    Id = ulong.Parse(Id)
+                };
+            }
+        }
+
         public SQLiteDatabase(string path)
         {
             db = new SQLiteConnection(path);
             db.CreateTable<SQLiteData>();
+            db.CreateTable<SQLiteData2>();
         }
 
         public Task<List<Rank>> GetAsync()
         {
             return Task.Run(() => db.Table<SQLiteData>().ToList().Select(f => f.ToRank()).ToList());
+        }
+
+        public Task<List<Role>> GetRolesAsync()
+        {
+            return Task.Run(() => db.Table<SQLiteData2>().ToList().Select(f => f.ToRole()).ToList());
         }
 
         public Task<Rank> GetAsync(ulong userId, ulong guildId)
@@ -116,6 +150,25 @@ namespace Ranker
                 else
                 {
                     db.Insert(new SQLiteData(newRank));
+                }
+            });
+        }
+
+        public Task UpsertAsync(ulong level, ulong id)
+        {
+            return Task.Run(() =>
+            {
+                Role newRole = new();
+                newRole.Level = level;
+                newRole.Id = id;
+                var list = db.Table<SQLiteData2>().ToList();
+                if (list.Any(f => ulong.Parse(f.Level) == level))
+                {
+                    db.Update(new SQLiteData2(newRole));
+                }
+                else
+                {
+                    db.Insert(new SQLiteData2(newRole));
                 }
             });
         }

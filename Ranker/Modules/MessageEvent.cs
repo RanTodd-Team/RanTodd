@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,13 @@ namespace Ranker
                     rank.Level += 1;
                     rank.Xp = 0;
                     rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * rank.Level) + 100);
+                    try
+                    {
+                        ulong roleId = (await _database.GetRolesAsync()).Find(x => x.Level == rank.Level)?.Id ?? 0;
+                        DiscordMember member = await e.Guild.GetMemberAsync(e.Author.Id);
+                        DiscordRole role = e.Guild.GetRole(roleId);
+                        await member.GrantRoleAsync(role);
+                    } catch { }
                 }
             }
 

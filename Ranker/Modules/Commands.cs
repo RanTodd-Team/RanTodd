@@ -47,6 +47,24 @@ namespace Ranker
             }
         }
 
+        [SlashCommand("role", "Configures a level up role.")]
+        public async Task RoleCommand(InteractionContext ctx, [Option("level", "Level to configure")] long level, [Option("role", "Role to configure")] DiscordRole role = null)
+        {
+            await ctx.CreateResponseAsync(
+                InteractionResponseType.DeferredChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AsEphemeral(true));
+            if (role == null)
+            {
+                await _database.UpsertAsync((ulong)level, 0);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role deconfigured!"));
+            } else
+            {
+                await _database.UpsertAsync((ulong)level, role.Id);
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role configured!"));
+            }
+            
+        }
+
         [SlashCommand("fleuron", "Enables or disables Flueron's style.")]
         public async Task FleuronCommand(InteractionContext ctx, [Option("enable", "True for enabling, False for disabling")] bool enabled)
         {
@@ -67,87 +85,6 @@ namespace Ranker
             }
 
             await _database.UpsertAsync(ctx.Member.Id, ctx.Guild.Id, rank);
-        }
-
-        public async Task RankFleuron(InteractionContext ctx, ulong userId, Rank rank)
-        {
-           DiscordUser user = await ctx.Client.GetUserAsync(userId);
-            string username = rank.Username ?? user.Username;
-            string discriminator = rank.Discriminator ?? user.Discriminator;
-            string pfpUrl = rank.Avatar ?? user.AvatarUrl;
-            ulong level = rank.Level;
-
-            ulong gottenXp = rank.Xp;
-            ulong maxXp = rank.NextXp;
-
-            var list = (await _database.GetAsync()).OrderByDescending(f => f.Xp).ToList();
-
-            int leader = list.IndexOf(list.FirstOrDefault(f => f.User == userId)) + 1;
-
-            Image<Rgba32> image = new Image<Rgba32>(934, 282);
-            var background = new Rectangle(0, 0, 934, 382);
-            image.Mutate(x => x.Fill(Color.Black, background));
-
-            FontCollection fonts = new FontCollection();
-            var metropolis = fonts.Install("./Fonts/Metropolis/Metropolis-Regular.ttf");
-            var epilogue = fonts.Install("./Fonts/Epilogue/static/Epilogue-Regular.ttf");
-
-
-            var font1 = new Font(metropolis, 54f);
-
-            var font2 = new Font(metropolis, 38f);
-
-            int measure = (int)TextMeasurer.Measure(username, new RendererOptions(font1)).Width + (int)TextMeasurer.Measure(" #" + discriminator, new RendererOptions(font2)).Width;
-
-            int widthUsernameContainer = ((measure + 180) > 420) ? measure + 180 : 420;
-
-            var usernameContainer = new Rectangle(0, 0, widthUsernameContainer, 82);
-            image.Mutate(x => x.Fill(Color.FromRgb(50, 169, 229), usernameContainer));
-
-            DrawingOptions drawingOptions = new DrawingOptions()
-            {
-                TextOptions = new TextOptions()
-                {
-                    HorizontalAlignment = HorizontalAlignment.Right
-                }
-            };
-
-            image.Mutate(x => x.DrawText(options: drawingOptions, "#" + discriminator, font2, Color.FromRgb(39, 85, 108), new Point(widthUsernameContainer - 10, 30)));
-
-            var measure2 = TextMeasurer.Measure(" #" + discriminator, new RendererOptions(font2));
-
-            image.Mutate(x => x.DrawText(options: drawingOptions, username, font1, Color.Black, new Point(widthUsernameContainer - (int)measure2.Width, 17)));
-
-            var propic = Image.Load(new WebClient().DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
-            try
-            {
-                propic = Image.Load(new WebClient().DownloadData(pfpUrl));
-            }
-            catch { }
-
-            propic.Mutate(x => x.Resize(new ResizeOptions()
-            {
-                Mode = ResizeMode.Stretch,
-                Size = new Size(130, 130)
-            }));
-
-            Image pfpRound = Extentions.RoundCorners(propic, null);
-
-            image.Mutate(x => x.DrawImage(pfpRound, new Point(18, 18), 1f));
-
-            var stream = new MemoryStream();
-            image.SaveAsPng(stream);
-            stream.Position = 0;
-
-            try
-            {
-                await ctx.Member.SendMessageAsync(new DiscordMessageBuilder().WithFile("rank.png", stream));
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("I have sent the rank card to you via DM."));
-            }
-            catch
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, but I cannot send a DM to you. Can you check if DM from members is enabled?"));
-            }
         }
 
         public async Task RankZeealeid(InteractionContext ctx, ulong userId, Rank rank)
@@ -239,5 +176,88 @@ namespace Ranker
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, but I cannot send a DM to you. Can you check if DM from members is enabled?"));
             }
         }
-}
+
+
+        public async Task RankFleuron(InteractionContext ctx, ulong userId, Rank rank)
+        {
+           DiscordUser user = await ctx.Client.GetUserAsync(userId);
+            string username = rank.Username ?? user.Username;
+            string discriminator = rank.Discriminator ?? user.Discriminator;
+            string pfpUrl = rank.Avatar ?? user.AvatarUrl;
+            ulong level = rank.Level;
+
+            ulong gottenXp = rank.Xp;
+            ulong maxXp = rank.NextXp;
+
+            var list = (await _database.GetAsync()).OrderByDescending(f => f.Xp).ToList();
+
+            int leader = list.IndexOf(list.FirstOrDefault(f => f.User == userId)) + 1;
+
+            Image<Rgba32> image = new Image<Rgba32>(934, 282);
+            var background = new Rectangle(0, 0, 934, 382);
+            image.Mutate(x => x.Fill(Color.Black, background));
+
+            FontCollection fonts = new FontCollection();
+            var metropolis = fonts.Install("./Fonts/Metropolis/Metropolis-Regular.ttf");
+            var epilogue = fonts.Install("./Fonts/Epilogue/static/Epilogue-Regular.ttf");
+
+
+            var font1 = new Font(metropolis, 54f);
+
+            var font2 = new Font(metropolis, 38f);
+
+            int measure = (int)TextMeasurer.Measure(username, new RendererOptions(font1)).Width + (int)TextMeasurer.Measure(" #" + discriminator, new RendererOptions(font2)).Width;
+
+            int widthUsernameContainer = ((measure + 180) > 420) ? measure + 180 : 420;
+
+            var usernameContainer = new Rectangle(0, 0, widthUsernameContainer, 82);
+            image.Mutate(x => x.Fill(Color.FromRgb(50, 169, 229), usernameContainer));
+
+            DrawingOptions drawingOptions = new DrawingOptions()
+            {
+                TextOptions = new TextOptions()
+                {
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
+            };
+
+            image.Mutate(x => x.DrawText(options: drawingOptions, "#" + discriminator, font2, Color.FromRgb(39, 85, 108), new Point(widthUsernameContainer - 10, 30)));
+
+            var measure2 = TextMeasurer.Measure(" #" + discriminator, new RendererOptions(font2));
+
+            image.Mutate(x => x.DrawText(options: drawingOptions, username, font1, Color.Black, new Point(widthUsernameContainer - (int)measure2.Width, 17)));
+
+            var propic = Image.Load(new WebClient().DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
+            try
+            {
+                propic = Image.Load(new WebClient().DownloadData(pfpUrl));
+            }
+            catch { }
+
+            propic.Mutate(x => x.Resize(new ResizeOptions()
+            {
+                Mode = ResizeMode.Stretch,
+                Size = new Size(130, 130)
+            }));
+
+            Image pfpRound = Extentions.RoundCorners(propic, null);
+
+            image.Mutate(x => x.DrawImage(pfpRound, new Point(18, 18), 1f));
+
+            var stream = new MemoryStream();
+            image.SaveAsPng(stream);
+            stream.Position = 0;
+
+            try
+            {
+                await ctx.Member.SendMessageAsync(new DiscordMessageBuilder().WithFile("rank.png", stream));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("I have sent the rank card to you via DM."));
+            }
+            catch
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, but I cannot send a DM to you. Can you check if DM from members is enabled?"));
+            }
+        }
+
+        }
 }

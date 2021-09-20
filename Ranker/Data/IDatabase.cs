@@ -20,9 +20,21 @@ namespace Ranker
         Task<Rank> GetAsync(ulong userId, ulong guildId);
 
         /// <summary>
+        /// Gets all roles.
+        /// </summary>
+        Task<List<Role>> GetRolesAsync();
+
+        /// <summary>
         /// Modify an existing rank or add a new rank.
         /// </summary>
         /// <param name="newRank">The new rank.</param>
         Task UpsertAsync(ulong userId, ulong guildId, Rank newRank);
+
+        /// <summary>
+        /// Modify an existing role or add a new role.
+        /// </summary>
+        /// <param name="level">The role level.</param>
+        /// <param name="id">The role id.</param>
+        Task UpsertAsync(ulong level, ulong id);
     }
 }
