@@ -1,4 +1,4 @@
-# Running the bot
+# Get started (Running the bot)
 
 1. Add an environment variable named `RANKER_TOKEN` with a value of your bot token you received in **step 8, Set up a bot account**.
    Please note that you may need to restart or log out for this change to take effect.
