@@ -29,10 +29,10 @@ Our code style is pretty simple. And we explain it here:
 
 # Contributors
 We'd like to thank our contributors for making this possible. 
-- @SapphireDisD: Authoring
-- @dongle-the-gadget: Coding most of the work
-- @zeealeid, @KojiOddysey, Kirby¹, @itsWindows11: Designing the default rank card
-- @Ahmed605: Coding most of the default rank card
+- [@SapphireDisD](https://github.com/SapphireDisD): Authoring
+- [@dongle-the-gadget](https://github.com/dongle-the-gadget): Coding most of the work
+- [@zeealeid](https://github.com/zeealeid), [@KojiOddysey](https://github.com/KojiOddysey), Kirby¹, [@itsWindows11](https://github.com/itsWindows11): Designing the default rank card
+- [@Ahmed605](https://github.com/Ahmed605): Coding most of the default rank card
 - Fleuron¹: Designing the second rank card
 
 ¹ (from Microsoft Community Discord)
