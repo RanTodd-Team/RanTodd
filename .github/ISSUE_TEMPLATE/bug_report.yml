@@ -27,7 +27,7 @@ body:
     id: context
     attributes:
       label: Additional context
-      description: Further information that might help us resolve this issue (i.e: Screenshots).
+      description: 'Further information that might help us resolve this issue (i.e: Screenshots).'
     validations:
       required: false
   - type: checkboxes
