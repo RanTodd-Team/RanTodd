@@ -5,14 +5,7 @@
 Ranker is a Discord ranking bot originally designed for Microsoft Community. It offers from a simple rank card to a complex leaderboard.
 
 # How to self-host?
-It's pretty simple! Just follow these instructions:
-1. Clone the repo.
-2. In the Ranker folder, rename `config.example.json` to `config.json`
-3. Configure the config.json, `Token` is not needed if you set `RANKER_TOKEN` environment variable. `GuildId` is needed only if you need the slash commands in only one server.
-4. Open a terminal there.
-5. `cd` to Ranker.
-6. Build it with `dotnet build`.
-7. Run it with `dotnet run`.
+You can get started [here](/docs/ddev.md)
 
 # Contributors
 We'd like to thank our contributors for making this possible. 
