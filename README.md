@@ -35,4 +35,4 @@ We'd like to thank our contributors for making this possible.
 - [@Ahmed605](https://github.com/Ahmed605): Coding most of the default rank card
 - Fleuron¹: Designing the second rank card
 
-¹ (from Microsoft Community Discord)
+¹ from Microsoft Community Discord
