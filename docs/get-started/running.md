@@ -9,3 +9,5 @@
 6. Opend a command line window and `cd` to Ranker.
 7. Execute `dotnet build` and wait for the build to finish.
 8. Execute `dotnet run` to run the bot.
+
+Your bot is now up and running!
