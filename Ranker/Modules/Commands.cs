@@ -211,7 +211,13 @@ namespace Ranker
             int widthUsernameContainer = ((measure + 180) > 420) ? measure + 180 : 420;
 
             var usernameContainer = new Rectangle(0, 0, widthUsernameContainer, 82);
-            image.Mutate(x => x.Fill(Color.FromRgb(50, 169, 229), usernameContainer));
+
+            Image userInfoCard = new Image<Rgba32>(usernameContainer.Width, usernameContainer.Height);
+
+            userInfoCard.Mutate(x => x.Fill(Color.FromRgb(50, 169, 229), usernameContainer));
+            userInfoCard = Extentions.RoundBottomRight(userInfoCard, 20);
+
+            image.Mutate(x => x.DrawImage(userInfoCard, 1f));
 
             DrawingOptions drawingOptions = new DrawingOptions()
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -101,6 +102,27 @@ namespace Ranker
 
 
             return new PathCollection(cornerTopLeft, cornerBottomLeft, cornerTopRight, cornerBottomRight);
+        }
+
+        public static Image RoundBottomRight(Image image, float radius)
+            => image.Clone(x => ApplyRoundedCornersBottomRight(x, radius));
+
+        private static IImageProcessingContext ApplyRoundedCornersBottomRight(IImageProcessingContext ctx, float cornerRadius)
+        {
+            Size size = ctx.GetCurrentSize();
+            IPath[] corners = new List<IPath>(BuildCorners2(size.Width, size.Height, cornerRadius)).ToArray();
+
+
+            ctx.SetGraphicsOptions(new GraphicsOptions()
+            {
+                Antialias = true,
+                AlphaCompositionMode = PixelAlphaCompositionMode.DestOut // enforces that any part of this shape that has color is punched out of the background
+            });
+
+            // mutating in here as we already have a cloned original
+            // use any color (not Transparent), so the corners will be clipped
+            ctx.Fill(Color.Red, corners[3]);
+            return ctx;
         }
     }
 }
