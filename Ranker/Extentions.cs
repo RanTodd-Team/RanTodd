@@ -86,7 +86,7 @@ namespace Ranker
         private static IImageProcessingContext ApplyRoundedCornersBottomRight(IImageProcessingContext ctx, float cornerRadius)
         {
             Size size = ctx.GetCurrentSize();
-            IPath[] corners = new List<IPath>(BuildCorners2(size.Width, size.Height, cornerRadius)).ToArray();
+            IPath[] corners = new List<IPath>(BuildCorners(size.Width, size.Height, cornerRadius)).ToArray();
 
 
             ctx.SetGraphicsOptions(new GraphicsOptions()
