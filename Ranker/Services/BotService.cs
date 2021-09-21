@@ -31,7 +31,7 @@ namespace Ranker
                 // We may drop JSON token.
                 Token = Environment.GetEnvironmentVariable("RANKER_TOKEN") ?? _configJson.Token,
                 TokenType = TokenType.Bot,
-                Intents = DiscordIntents.GuildMembers | DiscordIntents.GuildMessages
+                Intents = DiscordIntents.GuildMembers | DiscordIntents.GuildMessages | DiscordIntents.Guilds
             };
 
             client = new(configuration);
