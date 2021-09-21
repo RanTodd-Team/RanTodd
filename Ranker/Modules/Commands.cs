@@ -158,7 +158,7 @@ namespace Ranker
                 Size = new Size(80, 80)
             }));
 
-            Image pfpRound = Extentions.RoundCorners(propic, null);
+            Image pfpRound = Extentions.RoundCorners(propic, 40);
 
             image.Mutate(x => x.DrawImage(pfpRound, new Point(51, 89), 1f));
 
@@ -240,7 +240,7 @@ namespace Ranker
                 Size = new Size(130, 130)
             }));
 
-            Image pfpRound = Extentions.RoundCorners2(propic, 69);
+            Image pfpRound = Extentions.RoundCorners(propic, 69);
 
             image.Mutate(x => x.DrawImage(pfpRound, new Point(18, 18), 1f));
 
