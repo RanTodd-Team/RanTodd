@@ -240,7 +240,7 @@ namespace Ranker
                 Size = new Size(130, 130)
             }));
 
-            Image pfpRound = Extentions.RoundCorners2(propic, 65);
+            Image pfpRound = Extentions.RoundCorners2(propic, 69);
 
             image.Mutate(x => x.DrawImage(pfpRound, new Point(18, 18), 1f));
 
