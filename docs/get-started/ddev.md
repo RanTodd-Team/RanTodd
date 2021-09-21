@@ -20,7 +20,13 @@
 7. Give your bot a name and an avatar (or just leave it as is).
 
    <img src="../images/get-started/fig6.png" width="400">
-8. Select the **Copy** button near the **Click to Reveal Token** link and paste it somewhere safe, we will need it for the next part.
+8. Scroll down until you see **Server Members Intent**, and enable that setting.
+
+   <img src="../images/get-started/fig10.png" width="400">
+9. Save changes
+
+   <img src="../images/get-started/fig11.png" width="400">
+10. Select the **Copy** button near the **Click to Reveal Token** link and paste it somewhere safe, we will need it for the next part.
 
 ## Invite the bot to your server.
 1. Go to **General Information**.
