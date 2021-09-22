@@ -65,10 +65,14 @@ namespace Ranker
                     rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * rank.Level) + 100);
                     try
                     {
-                        ulong roleId = (await _database.GetRolesAsync()).Find(x => x.Level == rank.Level)?.Id ?? 0;
+                        List<Role> roles = await _database.GetRolesAsync();
+                        int currentRoleIndex = roles.FindIndex(x => x.Level == rank.Level);
+                        ulong roleId = roles[currentRoleIndex]?.Id ?? 0;
                         DiscordMember member = await e.Guild.GetMemberAsync(e.Author.Id);
-                        DiscordRole role = e.Guild.GetRole(roleId);
-                        await member.GrantRoleAsync(role);
+                        DiscordRole newRole = e.Guild.GetRole(roleId);
+                        DiscordRole oldRole = e.Guild.GetRole(roles[currentRoleIndex - 1]?.Id ?? 0);
+                        await member.GrantRoleAsync(newRole);
+                        await member.RevokeRoleAsync(oldRole);
                     } catch { }
                 }
             }
