@@ -100,5 +100,27 @@ namespace Ranker
             ctx.Fill(Color.Red, corners[3]);
             return ctx;
         }
+
+        public static Image RoundBottom(Image image, float radius)
+            => image.Clone(x => ApplyRoundedCornersBottom(x, radius));
+
+        private static IImageProcessingContext ApplyRoundedCornersBottom(IImageProcessingContext ctx, float cornerRadius)
+        {
+            Size size = ctx.GetCurrentSize();
+            IPath[] corners = new List<IPath>(BuildCorners(size.Width, size.Height, cornerRadius)).ToArray();
+
+
+            ctx.SetGraphicsOptions(new GraphicsOptions()
+            {
+                Antialias = true,
+                AlphaCompositionMode = PixelAlphaCompositionMode.DestOut // enforces that any part of this shape that has color is punched out of the background
+            });
+
+            // mutating in here as we already have a cloned original
+            // use any color (not Transparent), so the corners will be clipped
+            ctx.Fill(Color.Red, corners[3]);
+            ctx.Fill(Color.Red, corners[1]);
+            return ctx;
+        }
     }
 }

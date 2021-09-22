@@ -195,7 +195,19 @@ namespace Ranker
 
             Image<Rgba32> image = new Image<Rgba32>(934, 282);
             var background = new Rectangle(0, 0, 934, 382);
-            image.Mutate(x => x.Fill(Color.Black, background));
+            image.Mutate(x => x.Fill(Color.LightGray, background));
+
+            int progressPercentage = (int)((double)rank.Xp / rank.NextXp * 934);
+
+            var progressBarBackground = new Rectangle(0, 0, progressPercentage, 282);
+            image.Mutate(x => x.Fill(Color.FromRgb(50, 169, 229), progressBarBackground));
+
+            Image frontCard = new Image<Rgba32>(934, 242);
+            var frontCardBackground = new Rectangle(0, 0, 934, 242);
+            frontCard.Mutate(x => x.Fill(Color.Black, frontCardBackground));
+            frontCard = Extentions.RoundBottom(frontCard, 30);
+
+            image.Mutate(x => x.DrawImage(frontCard, 1f));
 
             FontCollection fonts = new FontCollection();
             var metropolis = fonts.Install("./Fonts/Metropolis/Metropolis-Regular.ttf");
