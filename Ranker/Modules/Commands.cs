@@ -48,6 +48,7 @@ namespace Ranker
         }
 
         [SlashCommand("role", "Configures a level up role.")]
+        [SlashRequireUserPermissionsAttribute(Permissions.ManageGuild, false)]
         public async Task RoleCommand(InteractionContext ctx, [Option("level", "Level to configure")] long level, [Option("role", "Role to configure")] DiscordRole role = null)
         {
             await ctx.CreateResponseAsync(
@@ -211,12 +212,15 @@ namespace Ranker
 
             FontCollection fonts = new FontCollection();
             var metropolis = fonts.Install("./Fonts/Metropolis/Metropolis-Regular.ttf");
+            var metropolisBold = fonts.Install("./Fonts/Metropolis/Metropolis-Bold.ttf");
             var epilogue = fonts.Install("./Fonts/Epilogue/static/Epilogue-Regular.ttf");
 
 
             var font1 = new Font(metropolis, 54f);
 
             var font2 = new Font(metropolis, 38f);
+
+            var font3 = new Font(metropolisBold, 38f, FontStyle.Bold);
 
             int measure = (int)TextMeasurer.Measure(username, new RendererOptions(font1)).Width + (int)TextMeasurer.Measure(" #" + discriminator, new RendererOptions(font2)).Width;
 
@@ -244,6 +248,10 @@ namespace Ranker
             var measure2 = TextMeasurer.Measure(" #" + discriminator, new RendererOptions(font2));
 
             image.Mutate(x => x.DrawText(options: drawingOptions, username, font1, Color.Black, new Point(widthUsernameContainer - (int)measure2.Width, 17)));
+
+            image.Mutate(x => x.DrawText("Rank " + leader, font3, Color.White, new Point(widthUsernameContainer + 32, 30)));
+
+            image.Mutate(x => x.DrawText("Level " + level, font3, Color.White, new Point(18, 190)));
 
             var propic = Image.Load(new WebClient().DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
             try
