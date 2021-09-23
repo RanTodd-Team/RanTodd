@@ -60,9 +60,9 @@ namespace Ranker
                 rank.LastCreditDate = e.Message.CreationTimestamp;
                 if (rank.Xp >= rank.NextXp)
                 {
+                    rank.Level += 1;
                     rank.Xp -= rank.NextXp;
                     rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * rank.Level) + 100);
-                    rank.Level += 1;
                     try
                     {
                         List<Role> roles = await _database.GetRolesAsync();
