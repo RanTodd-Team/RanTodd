@@ -37,8 +37,9 @@ namespace Ranker
             {
                 user = ctx.User;
             }
+            Rank currentUserRank = await _database.GetAsync(ctx.User.Id, ctx.Guild.Id);
             Rank rank = await _database.GetAsync(user.Id, ctx.Guild.Id);
-            if (rank.Fleuron)
+            if (currentUserRank.Fleuron)
             {
                 await RankFleuron(ctx, user.Id, rank);
             } else
