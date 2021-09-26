@@ -1,7 +1,51 @@
 ﻿@{
     ViewData["Title"] = "Leaderboard";
+    DSharpPlus.Entities.DiscordGuild guild = null;
+    try
+    {
+        guild = await BotService.client.GetGuildAsync(ulong.Parse(ViewBag.id.ToString()));
+    } catch {
+        Context.Response.Redirect(Url.Content("~/Error?code=404"));
+    }
+
+    IDatabase _database = ViewBag.database;
+
+    List<Rank> ranks = (await _database.GetAsync()).FindAll(x => x.Guild == ctx.Guild.Id).OrderByDescending(f => f.Xp).ToList();
 }
 
-<div>
-    
+<div class="banner">
+    <div class="bannerContent">
+        <div class="actualBannerContent">
+            <img src="@guild?.IconUrl" alt="@guild?.Name" class="serverIcon" />
+            <div class="serverInfo">
+                <p class="serverName">@guild?.Name</p>
+                <p>@guild?.Description</p>
+            </div>
+            <div class="extraBannerButtons">
+                <button class="customizeButton">Customize your rank card</button>
+                <a href="#" class="joinButton">Join server</a>
+            </div>
+        </div>
+    </div>
 </div>
+<div id="players">
+    @foreach (Rank rank in ranks.Take(100))
+    {
+        ranks.Remove(rank);
+        <div>@rank.Id</div>
+    }
+</div>
+<script>
+    window.onscroll = (() => {
+        if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+            var element;
+        @foreach(Rank rank in ranks.Take(100))
+        {
+            ranks.Remove(rank);
+            @:element = document.createElement("div");
+            @:element.innerHTML = "@rank.Id";
+            @:document.getElementById("players").appendChild(element);
+        }
+    }
+});
+</script>

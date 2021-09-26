@@ -8,7 +8,8 @@
 </head>
 <body>
     <header>
-        <a asp-area="" asp-controller="Home" asp-action="Index">Ranker</a>
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="headerTitle">Ranker</a>
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="@(bool.Parse((ViewData["Home"] ?? "false").ToString()) ? "active" : "")">Home</a>
     </header>
     <div class="container">
         @RenderBody()

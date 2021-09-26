@@ -13,7 +13,7 @@ namespace Ranker
 {
     public class BotService : IHostedService
     {
-        DiscordClient client;
+        public static DiscordClient client { get; set; }
 
         private readonly IDatabase _database;
         private readonly ConfigJson _configJson;

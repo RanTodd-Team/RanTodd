@@ -8,14 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Views\Error\**" />
-    <Compile Remove="Views\Leaderboard\**" />
-    <Content Remove="Views\Error\**" />
-    <Content Remove="Views\Leaderboard\**" />
-    <EmbeddedResource Remove="Views\Error\**" />
-    <EmbeddedResource Remove="Views\Leaderboard\**" />
-    <None Remove="Views\Error\**" />
-    <None Remove="Views\Leaderboard\**" />
     <None Remove="IDoEverything.DSharpPlus.SlashCommands" />
     <None Remove="Fonts\metropolis\Metropolis-Light.ttf" />
     <None Remove="Fonts\metropolis\Metropolis-Regular.ttf" />
@@ -47,9 +39,6 @@
     <None Remove="SixLabors.ImageSharp" />
     <None Remove="SixLabors.ImageSharp.Drawing" />
     <None Remove="Images\background.png" />
-    <None Remove="bootstrap" />
-    <None Remove="Views\Leaderboard\" />
-    <None Remove="Views\Error\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
