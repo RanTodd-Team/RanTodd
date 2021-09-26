@@ -39,13 +39,16 @@ namespace Ranker
             }
             Rank currentUserRank = await _database.GetAsync(ctx.User.Id, ctx.Guild.Id);
             Rank rank = await _database.GetAsync(user.Id, ctx.Guild.Id);
-            if (currentUserRank.Fleuron)
-            {
-                await RankFleuron(ctx, user.Id, rank);
-            } else
-            {
-                await RankZeealeid(ctx, user.Id, rank);
-            }
+            if (rank.Xp > 0) {
+                if (currentUserRank.Fleuron)
+                {
+                    await RankFleuron(ctx, user.Id, rank);
+                } else
+                {
+                    await RankZeealeid(ctx, user.Id, rank);
+                }
+            } else await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("You aren't ranked yet. Send some messages first, then try again."));
+
         }
 
         [SlashCommand("role", "Configures a level up role.")]
