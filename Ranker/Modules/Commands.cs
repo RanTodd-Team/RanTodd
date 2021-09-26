@@ -151,7 +151,7 @@ namespace Ranker
                 x.DrawText("#" + discriminator, font2, Color.FromRgb(153, 153, 153), new Point(60 + (int)measure.Width, 215 - 30)));
 
             image.Mutate(x =>
-                x.DrawText(drawingOptions, gottenXp + "/" + maxXp, font3, Color.White, new Point(934 - 47, 223 - 30)));
+                x.DrawText(drawingOptions, gottenXp + " / " + maxXp + " XP", font3, Color.White, new Point(934 - 47, 223 - 30)));
 
             var paths = Extentions.GoodBuildCorners(836, 5, 4).Transform(Matrix3x2.CreateTranslation(51, 179));
             var paths2 = Extentions.GoodBuildCorners((int)(678 * (gottenXp * 100 / maxXp)) / 100, 5, 4).Transform(Matrix3x2.CreateTranslation(51, 179));
