@@ -1,4 +1,5 @@
-﻿@{
+@inject Ranker.Data.IDatabase _database
+@{
     ViewData["Title"] = "Leaderboard";
     DSharpPlus.Entities.DiscordGuild guild = null;
     try
@@ -10,8 +11,6 @@
 
     List<Rank> ranks = (await _database.GetAsync()).FindAll(x => x.Guild == ViewBag.id).OrderByDescending(f => f.Xp).ToList();
 }
-        
-@import Ranker.Data.IDatabase _database
 
 <div class="banner">
     <div class="bannerContent">
