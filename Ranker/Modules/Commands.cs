@@ -89,6 +89,15 @@ namespace Ranker
             await _database.UpsertAsync(ctx.Member.Id, ctx.Guild.Id, rank);
         }
 
+        [SlashCommand("easter", "egg")]
+        public async Task EasterCommand(InteractionContext ctx)
+        {
+            await ctx.CreateResponseAsync(
+                InteractionResponseType.DeferredChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AsEphemeral(true));
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("https://www.youtube.com/watch?v=CBpSGsT7L6s"));
+        }
+
         public async Task RankZeealeid(InteractionContext ctx, ulong userId, Rank rank)
         {
             DiscordUser user = await ctx.Client.GetUserAsync(userId);
