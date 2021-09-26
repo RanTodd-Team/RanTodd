@@ -9,7 +9,7 @@
         Context.Response.Redirect(Url.Content("~/Error?code=404"));
     }
 
-    List<Rank> ranks = (await _database.GetAsync()).FindAll(x => x.Guild == ViewBag.id).OrderByDescending(f => f.Xp).ToList();
+    List<Rank> ranks = (await _database.GetAsync()).FindAll(x => x.Guild == ulong.Parse(ViewBag.id.ToString())).OrderByDescending(f => f.Xp).ToList();
 }
 
 <div class="banner">
