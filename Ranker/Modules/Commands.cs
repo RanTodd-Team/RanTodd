@@ -121,8 +121,8 @@ namespace Ranker
             image.Mutate(x => x.Fill(Color.FromRgb(0, 166, 234), rect));
 
             FontCollection fonts = new FontCollection();
-            var family1 = fonts.Install("./wwwroot/fonts/selawkb.ttf");
-            var family2 = fonts.Install("./wwwroot/fonts/selawk.ttf");
+            var family1 = fonts.Install("./Fonts/Selawk/selawkb.ttf");
+            var family2 = fonts.Install("./Fonts/Selawk/selawk.ttf");
 
             var font1 = new Font(family1, 38f, FontStyle.Bold);
             var font2 = new Font(family2, 38f);
