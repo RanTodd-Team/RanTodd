@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -67,10 +68,12 @@ namespace Ranker
             {
                 s.Client.Logger.LogError(e.Exception.ToString());
 
+                bool botOwner = s.Client.CurrentApplication.Owners.Any(x => x.Id == e.Context.User.Id);
+
                 DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
                     .WithTitle("Error")
                     .WithColor(DiscordColor.Red)
-                    .WithDescription(Debugger.IsAttached ? $"```{e.Exception}```" : e.Exception.Message);
+                    .WithDescription(botOwner ? $"```{e.Exception}```" : "Please contact the bot owner to get more information.");
 
                 await e.Context.EditResponseAsync(new DiscordWebhookBuilder()
                     .WithContent("Something went wrong!")
