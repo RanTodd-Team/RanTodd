@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Ranker
@@ -19,13 +20,31 @@ namespace Ranker
 
         static async Task MainAsync()
         {
+            string folder = "";
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                folder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "Ranker");
+            else
+                folder = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                    ".ranker");
+
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
             ConfigJson configJson = JsonConvert.DeserializeObject<ConfigJson>(File.ReadAllText("config.json"));
-            IDatabase database = new SQLiteDatabase(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Ranker.db"));
+            IDatabase database = new SQLiteDatabase(Path.Combine(folder, "Ranker.db"));
 
             DiscordConfiguration configuration = new()
             {
                 // We may drop JSON token.
+#pragma warning disable CS0612 // Type or member is obsolete
                 Token = Environment.GetEnvironmentVariable("RANKER_TOKEN") ?? configJson.Token,
+#pragma warning restore CS0612 // Type or member is obsolete
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.GuildMembers | DiscordIntents.GuildMessages | DiscordIntents.Guilds
             };
