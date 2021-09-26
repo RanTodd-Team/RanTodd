@@ -36,6 +36,12 @@ namespace Ranker
 
             slashCommands.RegisterCommands<Commands>(configJson.GuildId);
 
+            client.Ready += (s, e) =>
+            {
+                Console.WriteLine("Ready!");
+                return Task.CompletedTask;
+            };
+
             await client.ConnectAsync();
             await Task.Delay(-1);
         }
