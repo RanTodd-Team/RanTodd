@@ -8,10 +8,10 @@
         Context.Response.Redirect(Url.Content("~/Error?code=404"));
     }
 
-    IDatabase _database = ViewBag.database;
-
-    List<Rank> ranks = (await _database.GetAsync()).FindAll(x => x.Guild == ctx.Guild.Id).OrderByDescending(f => f.Xp).ToList();
+    List<Rank> ranks = (await _database.GetAsync()).FindAll(x => x.Guild == ViewBag.id).OrderByDescending(f => f.Xp).ToList();
 }
+        
+@import Ranker.Data.IDatabase _database
 
 <div class="banner">
     <div class="bannerContent">
