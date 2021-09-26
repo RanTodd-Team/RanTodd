@@ -1,9 +1,11 @@
 ﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -61,17 +63,25 @@ namespace Ranker
                 Services = servCollection.BuildServiceProvider()
             });
 
-            slashCommands.SlashCommandErrored += (s, e) =>
+            slashCommands.SlashCommandErrored += async (s, e) =>
             {
                 s.Client.Logger.LogError(e.Exception.ToString());
-                return Task.CompletedTask;
+
+                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
+                    .WithTitle("Error")
+                    .WithColor(DiscordColor.Red)
+                    .WithDescription(Debugger.IsAttached ? $"```{e.Exception}```" : e.Exception.Message);
+
+                await e.Context.EditResponseAsync(new DiscordWebhookBuilder()
+                    .WithContent("Something went wrong!")
+                    .AddEmbed(embed));
             };
 
             slashCommands.RegisterCommands<Commands>(configJson.GuildId);
 
             client.Ready += (s, e) =>
             {
-                Console.WriteLine("Ready!");
+                s.Logger.LogInformation("Bot is ready!");
                 return Task.CompletedTask;
             };
 
