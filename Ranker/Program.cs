@@ -1,5 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.SlashCommands;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -18,7 +20,7 @@ namespace Ranker
         static async Task MainAsync()
         {
             ConfigJson configJson = JsonConvert.DeserializeObject<ConfigJson>(File.ReadAllText("config.json"));
-            SQLiteDatabase database = new SQLiteDatabase(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Ranker.db"));
+            IDatabase database = new SQLiteDatabase(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Ranker.db"));
 
             DiscordConfiguration configuration = new()
             {
@@ -32,7 +34,19 @@ namespace Ranker
 
             client.AddExtension(new MessageEvent(database));
 
-            var slashCommands = client.UseSlashCommands();
+            ServiceCollection servCollection = new();
+            servCollection.AddSingleton(database);
+
+            var slashCommands = client.UseSlashCommands(new()
+            {
+                Services = servCollection.BuildServiceProvider()
+            });
+
+            slashCommands.SlashCommandErrored += (s, e) =>
+            {
+                s.Client.Logger.LogError(e.Exception.ToString());
+                return Task.CompletedTask;
+            };
 
             slashCommands.RegisterCommands<Commands>(configJson.GuildId);
 

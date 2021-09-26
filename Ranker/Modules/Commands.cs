@@ -49,7 +49,7 @@ namespace Ranker
         }
 
         [SlashCommand("role", "Configures a level up role.")]
-        [SlashRequireUserPermissionsAttribute(Permissions.ManageGuild, false)]
+        [SlashRequireUserPermissions(Permissions.ManageGuild, false)]
         public async Task RoleCommand(InteractionContext ctx, [Option("level", "Level to configure")] long level, [Option("role", "Role to configure")] DiscordRole role = null)
         {
             await ctx.CreateResponseAsync(
