@@ -9,10 +9,11 @@ You can get started [here](/docs/get-started/ddev.md).
 
 # Contributors
 We'd like to thank our contributors for making this possible. 
-- [@SapphireDisD](https://github.com/SapphireDisD): Authoring
-- [@dongle-the-gadget](https://github.com/dongle-the-gadget): Doing most of the work
-- [@Ahmed605](https://github.com/Ahmed605): Coding most of the default rank card
-- [@zeealeid](https://github.com/zeealeid), [@KojiOdyssey](https://github.com/KojiOdyssey), [@dAKirby309](https://github.com/dAKirby309), [@itsWindows11](https://github.com/itsWindows11): Designing the default rank card
-- [Fleuron](https://discord.com/users/188482204601548800): Designing the second rank card
+- [@SapphireDisD](https://github.com/SapphireDisD): Ranker's author.
+- [@dongle-the-gadget](https://github.com/dongle-the-gadget): Ranker's main dev.
+- [@Ahmed605](https://github.com/Ahmed605): Ranker's main rank card main developer.
+- [@zeealeid](https://github.com/zeealeid): Ranker's main rank card main designer.
+- [@KojiOdyssey](https://github.com/KojiOdyssey), [@dAKirby309](https://github.com/dAKirby309), [@itsWindows11](https://github.com/itsWindows11): Ranker's main rank card design collaborators.
+- [Fleuron](https://discord.com/users/188482204601548800): Ranker's second rank card designer.
 
 
