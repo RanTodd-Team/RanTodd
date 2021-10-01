@@ -14,18 +14,17 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using DSharpPlus;
+using Newtonsoft.Json;
 
 namespace Ranker
 {
     public class Commands : ApplicationCommandModule
     {
-        // Designed by Fleuron
         private readonly IDatabase _database;
         public Commands(IDatabase database)
         {
             _database = database;
         }
-
 
         [SlashCommand("rank", "View the rank of a user.")]
         public async Task RankCommand(InteractionContext ctx, [Option("user", "User to view ranks for")] DiscordUser user = null)
@@ -94,6 +93,22 @@ namespace Ranker
             await _database.UpsertAsync(ctx.Member.Id, ctx.Guild.Id, rank);
         }
 
+        [SlashCommand("levels", "Send leaderboard.")]
+        public async Task LevelsCommand(InteractionContext ctx)
+        {
+            string domain = JsonConvert.DeserializeObject<ConfigJson>(File.ReadAllText("config.json")).Domain;
+            await ctx.CreateResponseAsync(
+                InteractionResponseType.DeferredChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AsEphemeral(true));
+            if (Uri.IsWellFormedUriString(domain, UriKind.Absolute))
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(domain + "/leaderboard/" + ctx.Guild.Id));
+            } else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Leaderboard setup not completed!"));
+            }
+        }
+
         [SlashCommand("easter", "egg")]
         public async Task EasterCommand(InteractionContext ctx)
         {
@@ -103,6 +118,7 @@ namespace Ranker
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("https://www.youtube.com/watch?v=CBpSGsT7L6s"));
         }
 
+        // Designed by Zeealeid
         public async Task RankZeealeid(InteractionContext ctx, ulong userId, Rank rank)
         {
             DiscordUser user = await ctx.Client.GetUserAsync(userId);
@@ -193,7 +209,7 @@ namespace Ranker
             }
         }
 
-
+        // Designed by Fleuron
         public async Task RankFleuron(InteractionContext ctx, ulong userId, Rank rank)
         {
            DiscordUser user = await ctx.Client.GetUserAsync(userId);
@@ -237,6 +253,8 @@ namespace Ranker
 
             var font3 = new Font(metropolisBold, 38f, FontStyle.Bold);
 
+            var font4 = new Font(epilogue, 38f);
+
             int measure = (int)TextMeasurer.Measure(username, new RendererOptions(font1)).Width + (int)TextMeasurer.Measure(" #" + discriminator, new RendererOptions(font2)).Width;
 
             int widthUsernameContainer = ((measure + 180) > 420) ? measure + 180 : 420;
@@ -267,6 +285,18 @@ namespace Ranker
             image.Mutate(x => x.DrawText("Rank " + leader, font3, Color.White, new Point(widthUsernameContainer + 32, 30)));
 
             image.Mutate(x => x.DrawText("Level " + level, font3, Color.White, new Point(18, 190)));
+
+            var measure3 = TextMeasurer.Measure(gottenXp.ToString(), new RendererOptions(font4));
+
+            var measure4 = TextMeasurer.Measure("|", new RendererOptions(font4));
+
+            var measure5 = TextMeasurer.Measure(maxXp.ToString(), new RendererOptions(font4));
+
+            image.Mutate(x => x.DrawText(gottenXp.ToString(), font4, Color.White, new Point(934 - (int)measure3.Width - (int)measure4.Width - (int)measure5.Width - 18, 190)));
+
+            image.Mutate(x => x.DrawText("|", font4, Color.FromRgb(50, 169, 229), new Point(934 - (int)measure5.Width - 28, 190)));
+
+            image.Mutate(x => x.DrawText(maxXp.ToString(), font4, Color.White, new Point(934 - (int)measure5.Width - 18, 190)));
 
             var propic = Image.Load(new WebClient().DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
             try

@@ -5,6 +5,7 @@
 2. Clone this repository.
 3. Rename `config.example.json` to `config.json`.
 4. Open the `config.json` file.
+5. (Optionally, complete only if the website is configured) Edit the `Domain` JSON field to your website domain.
 5. (Optionally but highly recommended for testing scenarios or one-server setup) Edit the `GuildId` JSON field to your server ID.
 6. Open a command line window and `cd` to Ranker. Make sure that `Ranker.csproj` exists in the selected folder.
 7. Execute `dotnet build` and wait for the build to finish.
