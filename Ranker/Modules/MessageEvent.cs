@@ -56,7 +56,7 @@ namespace Ranker
             rank.Avatar = e.Author.AvatarUrl;
             rank.Username = e.Author.Username;
             rank.Discriminator = e.Author.Discriminator;
-            rank.Messasges += 1;
+            rank.Messages += 1;
             
             if (e.Message.CreationTimestamp >= rank.LastCreditDate.AddMinutes(1))
             {

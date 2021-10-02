@@ -11,7 +11,7 @@ namespace Ranker
 
         public DateTimeOffset LastCreditDate { get; set; } = DateTimeOffset.UnixEpoch;
 
-        public ulong Messasges { get; set; }
+        public ulong Messages { get; set; }
 
         public ulong NextXp { get; set; } = 100;
 

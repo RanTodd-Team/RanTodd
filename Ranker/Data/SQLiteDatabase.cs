@@ -21,7 +21,7 @@ namespace Ranker
             public SQLiteData(Rank rank)
             {
                 LastCreditDate = rank.LastCreditDate;
-                Messasges = rank.Messasges.ToString();
+                Messages = rank.Messages.ToString();
                 NextXp = rank.NextXp.ToString();
                 Level = rank.Level.ToString();
                 Xp = rank.Xp.ToString();
@@ -39,7 +39,7 @@ namespace Ranker
 
             public DateTimeOffset LastCreditDate { get; set; }
 
-            public string Messasges { get; set; }
+            public string Messages { get; set; }
 
             public string NextXp { get; set; }
 
@@ -66,7 +66,7 @@ namespace Ranker
                 return new Rank()
                 {
                     LastCreditDate = LastCreditDate,
-                    Messasges = ulong.Parse(Messasges),
+                    Messages = ulong.Parse(Messages),
                     NextXp = ulong.Parse(NextXp),
                     Level = ulong.Parse(Level),
                     Xp = ulong.Parse(Xp),
