@@ -8,4 +8,4 @@ services:
     volumes:
       - type: bind
         source: ./Ranker/config.json
-        target: /app/config.jsom
+        target: /app/config.json
