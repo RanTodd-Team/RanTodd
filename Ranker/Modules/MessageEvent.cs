@@ -25,6 +25,8 @@ namespace Ranker
 
         private async Task Client_GuildMemberUpdated(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs e)
         {
+            if (e.Member.IsBot) return;
+
             Rank rank = await _database.GetAsync(e.Member.Id, e.Guild.Id);
             rank.Avatar = e.Member.GuildAvatarUrl;
             rank.Discriminator = e.Member.Discriminator;
@@ -34,6 +36,8 @@ namespace Ranker
 
         private async Task Client_GuildMemberAdded(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberAddEventArgs e)
         {
+            if (e.Member.IsBot) return;
+
             Rank rank = new()
             {
                 Avatar = e.Member.AvatarUrl,
@@ -46,6 +50,8 @@ namespace Ranker
 
         private async Task Client_MessageCreated(DiscordClient sender, DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
+            if (e.Member.IsBot) return;
+
             Rank rank = await _database.GetAsync(e.Author.Id, e.Guild.Id);
             rank.Avatar = e.Author.AvatarUrl;
             rank.Username = e.Author.Username;
