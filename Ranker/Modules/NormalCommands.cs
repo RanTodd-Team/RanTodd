@@ -29,6 +29,7 @@ namespace Ranker
         [Command("rank")]
         public async Task RankCommand(CommandContext ctx, DiscordUser user = null)
         {
+            await ctx.Message.DeleteAsync();
             if (user == null)
             {
                 user = ctx.User;
