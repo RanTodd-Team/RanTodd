@@ -44,10 +44,7 @@ namespace Ranker
 
             DiscordConfiguration configuration = new()
             {
-                // We may drop JSON token.
-#pragma warning disable CS0612 // Type or member is obsolete
-                Token = Environment.GetEnvironmentVariable("RANKER_TOKEN") ?? configJson.Token,
-#pragma warning restore CS0612 // Type or member is obsolete
+                Token = Environment.GetEnvironmentVariable("RANKER_TOKEN"),
                 TokenType = TokenType.Bot,
                 Intents = DiscordIntents.GuildMembers | DiscordIntents.GuildMessages | DiscordIntents.Guilds
             };

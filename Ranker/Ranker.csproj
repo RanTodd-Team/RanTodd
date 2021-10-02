@@ -11,7 +11,7 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
-    <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-01013" />
+    <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-01018" />
     <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0-nightly-01013" />
   </ItemGroup>
   <ItemGroup>
