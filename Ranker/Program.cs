@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.DependencyInjection;
@@ -77,7 +78,15 @@ namespace Ranker
                     .AddEmbed(embed));
             };
 
-            slashCommands.RegisterCommands<Commands>(configJson.GuildId);
+            slashCommands.RegisterCommands<SlashCommands>(configJson.GuildId);
+
+            var commands = client.UseCommandsNext(new CommandsNextConfiguration()
+            {
+                StringPrefixes = configJson.Prefixes,
+                Services = servCollection.BuildServiceProvider()
+            });
+
+            commands.RegisterCommands<NormalCommands>();
 
             client.Ready += (s, e) =>
             {

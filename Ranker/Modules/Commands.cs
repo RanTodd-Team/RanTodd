@@ -18,110 +18,12 @@ using Newtonsoft.Json;
 
 namespace Ranker
 {
-    public class Commands : ApplicationCommandModule
+    public class Commands
     {
-        private readonly IDatabase _database;
-        public Commands(IDatabase database)
-        {
-            _database = database;
-        }
-
-        [SlashCommand("rank", "View the rank of a user.")]
-        public async Task RankCommand(InteractionContext ctx, [Option("user", "User to view ranks for")] DiscordUser user = null)
-        {
-            await ctx.CreateResponseAsync(
-                InteractionResponseType.DeferredChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral(true));
-            if (user == null)
-            {
-                user = ctx.User;
-            }
-            Rank currentUserRank = await _database.GetAsync(ctx.User.Id, ctx.Guild.Id);
-            Rank rank = await _database.GetAsync(user.Id, ctx.Guild.Id);
-            if (rank.Xp > 0) 
-            {
-                if (currentUserRank.Fleuron)
-                {
-                    await RankFleuron(ctx, user.Id, rank);
-                } else
-                {
-                    await RankZeealeid(ctx, user.Id, rank);
-                }
-            } 
-            else await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("You aren't ranked yet. Send some messages first, then try again."));
-
-        }
-
-        [SlashCommand("role", "Configures a level up role.")]
-        [SlashRequireUserPermissions(Permissions.ManageGuild, false)]
-        public async Task RoleCommand(InteractionContext ctx, [Option("level", "Level to configure")] long level, [Option("role", "Role to configure")] DiscordRole role = null)
-        {
-            await ctx.CreateResponseAsync(
-                InteractionResponseType.DeferredChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral(true));
-            if (role == null)
-            {
-                await _database.UpsertAsync((ulong)level, 0);
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role deconfigured!"));
-            } else
-            {
-                await _database.UpsertAsync((ulong)level, role.Id);
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role configured!"));
-            }
-            
-        }
-
-        [SlashCommand("fleuron", "Enables or disables Flueron's style.")]
-        public async Task FleuronCommand(InteractionContext ctx, [Option("enable", "True for enabling, False for disabling")] bool enabled)
-        {
-            await ctx.CreateResponseAsync(
-                InteractionResponseType.DeferredChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral(true));
-
-            Rank rank = await _database.GetAsync(ctx.Member.Id, ctx.Guild.Id);
-
-            if (enabled)
-            {
-                rank.Fleuron = true;
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Flueron's style enabled!"));
-            } else
-            {
-                rank.Fleuron = false;
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Flueron's style disabled!"));
-            }
-
-            await _database.UpsertAsync(ctx.Member.Id, ctx.Guild.Id, rank);
-        }
-
-        [SlashCommand("levels", "Send leaderboard.")]
-        public async Task LevelsCommand(InteractionContext ctx)
-        {
-            string domain = JsonConvert.DeserializeObject<ConfigJson>(File.ReadAllText("config.json")).Domain;
-            await ctx.CreateResponseAsync(
-                InteractionResponseType.DeferredChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral(true));
-            if (Uri.IsWellFormedUriString(domain, UriKind.Absolute))
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(domain + "/leaderboard/" + ctx.Guild.Id));
-            } else
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Leaderboard setup not completed!"));
-            }
-        }
-
-        [SlashCommand("easter", "egg")]
-        public async Task EasterCommand(InteractionContext ctx)
-        {
-            await ctx.CreateResponseAsync(
-                InteractionResponseType.DeferredChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral(true));
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("https://www.youtube.com/watch?v=CBpSGsT7L6s"));
-        }
 
         // Designed by Zeealeid
-        public async Task RankZeealeid(InteractionContext ctx, ulong userId, Rank rank)
+        public async static Task<MemoryStream> RankZeealeid(IDatabase _database, DiscordGuild guild, DiscordUser user, Rank rank)
         {
-            DiscordUser user = await ctx.Client.GetUserAsync(userId);
             string username = rank.Username ?? user.Username;
             string discriminator = rank.Discriminator ?? user.Discriminator;
             string pfpUrl = rank.Avatar ?? user.AvatarUrl;
@@ -130,9 +32,9 @@ namespace Ranker
             ulong gottenXp = rank.Xp;
             ulong maxXp = rank.NextXp;
 
-            var list = (await _database.GetAsync()).FindAll(x => x.Guild == ctx.Guild.Id).OrderByDescending(f => f.Xp).ToList();
+            var list = (await _database.GetAsync()).FindAll(x => x.Guild == guild.Id).OrderByDescending(f => f.Xp).ToList();
 
-            int leader = list.IndexOf(list.FirstOrDefault(f => f.User == userId)) + 1;
+            int leader = list.IndexOf(list.FirstOrDefault(f => f.User == user.Id)) + 1;
 
             Image<Rgba32> image = new Image<Rgba32>(934, 282);
             var img = Image.Load("./Images/Background.png");
@@ -198,21 +100,12 @@ namespace Ranker
             image.SaveAsPng(stream);
             stream.Position = 0;
 
-            try
-            {
-                await ctx.Member.SendMessageAsync(new DiscordMessageBuilder().WithFile("rank.png", stream));
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("I have sent the rank card to you via DM."));
-            }
-            catch
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, but I cannot send a DM to you. Can you check if DM from members is enabled?"));
-            }
+            return stream;
         }
 
         // Designed by Fleuron
-        public async Task RankFleuron(InteractionContext ctx, ulong userId, Rank rank)
+        public async static Task<MemoryStream> RankFleuron(IDatabase _database, DiscordGuild guild, DiscordUser user, Rank rank)
         {
-           DiscordUser user = await ctx.Client.GetUserAsync(userId);
             string username = rank.Username ?? user.Username;
             string discriminator = rank.Discriminator ?? user.Discriminator;
             string pfpUrl = rank.Avatar ?? user.AvatarUrl;
@@ -221,9 +114,9 @@ namespace Ranker
             ulong gottenXp = rank.Xp;
             ulong maxXp = rank.NextXp;
 
-            var list = (await _database.GetAsync()).FindAll(x => x.Guild == ctx.Guild.Id).OrderByDescending(f => f.Xp).ToList();
+            var list = (await _database.GetAsync()).FindAll(x => x.Guild == guild.Id).OrderByDescending(f => f.Xp).ToList();
 
-            int leader = list.IndexOf(list.FirstOrDefault(f => f.User == userId)) + 1;
+            int leader = list.IndexOf(list.FirstOrDefault(f => f.User == user.Id)) + 1;
 
             Image<Rgba32> image = new Image<Rgba32>(934, 282);
             var background = new Rectangle(0, 0, 934, 382);
@@ -319,15 +212,7 @@ namespace Ranker
             image.SaveAsPng(stream);
             stream.Position = 0;
 
-            try
-            {
-                await ctx.Member.SendMessageAsync(new DiscordMessageBuilder().WithFile("rank.png", stream));
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("I have sent the rank card to you via DM."));
-            }
-            catch
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, but I cannot send a DM to you. Can you check if DM from members is enabled?"));
-            }
+            return stream;
         }
     }
 }

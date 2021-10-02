@@ -12,5 +12,7 @@ namespace Ranker
         public string Domain { get; set; }
 
         public ulong? GuildId { get; set; }
+
+        public string[] Prefixes { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿{
   "Domain": "[DOMAIN]",
-  "GuildId": null
+  "GuildId": null,
+  "Prefixes": [ "!" ]
 }
