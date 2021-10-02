@@ -1,0 +1,11 @@
+version: '2.3'
+services:
+  bot:
+    build: .
+    env_file:
+      - .env
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ./Ranker/config.json
+        target: /app/config.json
