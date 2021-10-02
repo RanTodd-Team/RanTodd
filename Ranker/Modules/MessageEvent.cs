@@ -50,7 +50,7 @@ namespace Ranker
 
         private async Task Client_MessageCreated(DiscordClient sender, DSharpPlus.EventArgs.MessageCreateEventArgs e)
         {
-            if (e.Member.IsBot) return;
+            if (e.Author.IsBot) return;
 
             Rank rank = await _database.GetAsync(e.Author.Id, e.Guild.Id);
             rank.Avatar = e.Author.AvatarUrl;
