@@ -406,3 +406,6 @@ ASALocalRun/
 
 # Config file
 config.json
+
+# Docker environment file
+.env
