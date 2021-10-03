@@ -22,7 +22,8 @@ namespace Ranker
         /// <summary>
         /// Gets all roles.
         /// </summary>
-        Task<List<Role>> GetRolesAsync();
+        /// <param name="guildId">The guild id.</param>
+        Task<List<Role>> GetRolesAsync(ulong guildId);
 
         /// <summary>
         /// Modify an existing rank or add a new rank.
@@ -33,8 +34,16 @@ namespace Ranker
         /// <summary>
         /// Modify an existing role or add a new role.
         /// </summary>
+        /// <param name="guildId">The guild id.</param>
         /// <param name="level">The role level.</param>
-        /// <param name="id">The role id.</param>
-        Task UpsertAsync(ulong level, ulong id);
+        /// <param name="roleId">The role id.</param>
+        Task UpsertAsync(ulong guildId, ulong level, ulong roleId);
+
+        /// <summary>
+        /// Remove an existing role.
+        /// </summary>
+        /// <param name="guildId">The guild id.</param>
+        /// <param name="level">The role level.</param>
+        Task RemoveAsync(ulong guildId, ulong level);
     }
 }

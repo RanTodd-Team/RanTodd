@@ -72,11 +72,11 @@ namespace Ranker
                 new DiscordInteractionResponseBuilder().AsEphemeral(true));
             if (role == null)
             {
-                await _database.UpsertAsync((ulong)level, 0);
+                await _database.RemoveAsync(ctx.Guild.Id, (ulong)level);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role deconfigured!"));
             } else
             {
-                await _database.UpsertAsync((ulong)level, role.Id);
+                await _database.UpsertAsync(ctx.Guild.Id, (ulong)level, role.Id);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role configured!"));
             }
             

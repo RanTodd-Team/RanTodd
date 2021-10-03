@@ -89,22 +89,28 @@ namespace Ranker
 
             public SQLiteData2(Role role)
             {
+                Guild = role.Guild.ToString();
                 Level = role.Level.ToString();
-                Id = role.Id.ToString();
+                RoleId = role.Id.ToString();
             }
 
             [PrimaryKey]
+            public string Id { get => $"{Guild}/{Level}" ; set { } }
+
+            public string Guild { get; set; }
+
             public string Level { get; set; }
 
-            public string Id { get; set; }
+            public string RoleId { get; set; }
 
 
             public Role ToRole()
             {
                 return new Role()
                 {
+                    Guild = ulong.Parse(Guild),
                     Level = ulong.Parse(Level),
-                    Id = ulong.Parse(Id)
+                    RoleId = ulong.Parse(RoleId)
                 };
             }
         }
@@ -121,9 +127,9 @@ namespace Ranker
             return Task.Run(() => db.Table<SQLiteData>().ToList().Select(f => f.ToRank()).ToList());
         }
 
-        public Task<List<Role>> GetRolesAsync()
+        public Task<List<Role>> GetRolesAsync(ulong guildId)
         {
-            return Task.Run(() => db.Table<SQLiteData2>().ToList().Select(f => f.ToRole()).ToList());
+            return Task.Run(() => db.Table<SQLiteData2>().ToList().FindAll(x => x.Guild == guildId.ToString()).Select(f => f.ToRole()).ToList());
         }
 
         public Task<Rank> GetAsync(ulong userId, ulong guildId)
@@ -154,14 +160,15 @@ namespace Ranker
             });
         }
 
-        public Task UpsertAsync(ulong level, ulong id)
+        public Task UpsertAsync(ulong guildId, ulong level, ulong roleId)
         {
             return Task.Run(() =>
             {
                 Role newRole = new();
+                newRole.Guild = guildId;
                 newRole.Level = level;
-                newRole.Id = id;
-                var list = db.Table<SQLiteData2>().ToList();
+                newRole.RoleId = roleId;
+                var list = db.Table<SQLiteData2>().ToList().FindAll(x => x.Guild == guildId.ToString());
                 if (list.Any(f => ulong.Parse(f.Level) == level))
                 {
                     db.Update(new SQLiteData2(newRole));
@@ -170,6 +177,14 @@ namespace Ranker
                 {
                     db.Insert(new SQLiteData2(newRole));
                 }
+            });
+        }
+
+        public Task RemoveAsync(ulong guildId, ulong level)
+        {
+            return Task.Run(() =>
+            {
+                db.Delete<SQLiteData2>(guildId + "/" + level);
             });
         }
     }
