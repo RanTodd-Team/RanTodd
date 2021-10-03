@@ -91,7 +91,7 @@ namespace Ranker
             {
                 Guild = role.Guild.ToString();
                 Level = role.Level.ToString();
-                RoleId = role.Id.ToString();
+                RoleId = role.RoleId.ToString();
             }
 
             [PrimaryKey]
