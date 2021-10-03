@@ -72,7 +72,7 @@ namespace Ranker
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role deconfigured!"));
             } else
             {
-                await _database.UpsertAsync(ctx.Guild.Id, (ulong)level, role.Id);
+                await _database.UpsertAsync(ctx.Guild.Id, (ulong)level, role.Id, role.Name);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role configured!"));
             }
             

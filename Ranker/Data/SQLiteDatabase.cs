@@ -92,6 +92,7 @@ namespace Ranker
                 Guild = role.Guild.ToString();
                 Level = role.Level.ToString();
                 RoleId = role.RoleId.ToString();
+                RoleName = role.RoleName;
             }
 
             [PrimaryKey]
@@ -103,6 +104,8 @@ namespace Ranker
 
             public string RoleId { get; set; }
 
+            public string RoleName { get; set; }
+
 
             public Role ToRole()
             {
@@ -110,7 +113,8 @@ namespace Ranker
                 {
                     Guild = ulong.Parse(Guild),
                     Level = ulong.Parse(Level),
-                    RoleId = ulong.Parse(RoleId)
+                    RoleId = ulong.Parse(RoleId),
+                    RoleName = RoleName
                 };
             }
         }
@@ -160,7 +164,7 @@ namespace Ranker
             });
         }
 
-        public Task UpsertAsync(ulong guildId, ulong level, ulong roleId)
+        public Task UpsertAsync(ulong guildId, ulong level, ulong roleId, string roleName)
         {
             return Task.Run(() =>
             {
@@ -168,6 +172,7 @@ namespace Ranker
                 newRole.Guild = guildId;
                 newRole.Level = level;
                 newRole.RoleId = roleId;
+                newRole.RoleName = roleName;
                 var list = db.Table<SQLiteData2>().ToList().FindAll(x => x.Guild == guildId.ToString());
                 if (list.Any(f => ulong.Parse(f.Level) == level))
                 {

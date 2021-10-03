@@ -24,7 +24,7 @@ namespace Ranker
         // Designed by Zeealeid
         public async static Task<MemoryStream> RankZeealeid(IDatabase _database, DiscordGuild guild, DiscordUser user, Rank rank)
         {
-            string username = rank.Username ?? user.Username;
+            string username = (rank.Username ?? user.Username).Substring(0, 13) + ((rank.Username ?? user.Username).Substring(0, 13) != (rank.Username ?? user.Username) ? "..." : "");
             string discriminator = rank.Discriminator ?? user.Discriminator;
             string pfpUrl = rank.Avatar ?? user.AvatarUrl;
             ulong level = rank.Level;
@@ -106,7 +106,7 @@ namespace Ranker
         // Designed by Fleuron
         public async static Task<MemoryStream> RankFleuron(IDatabase _database, DiscordGuild guild, DiscordUser user, Rank rank)
         {
-            string username = rank.Username ?? user.Username;
+            string username = (rank.Username ?? user.Username).Substring(0, 13) + ((rank.Username ?? user.Username).Substring(0, 13) != (rank.Username ?? user.Username) ? "..." : "");
             string discriminator = rank.Discriminator ?? user.Discriminator;
             string pfpUrl = rank.Avatar ?? user.AvatarUrl;
             ulong level = rank.Level;

@@ -37,7 +37,8 @@ namespace Ranker
         /// <param name="guildId">The guild id.</param>
         /// <param name="level">The role level.</param>
         /// <param name="roleId">The role id.</param>
-        Task UpsertAsync(ulong guildId, ulong level, ulong roleId);
+        /// <param name="roleName">The role name.</param>
+        Task UpsertAsync(ulong guildId, ulong level, ulong roleId, string roleName);
 
         /// <summary>
         /// Remove an existing role.

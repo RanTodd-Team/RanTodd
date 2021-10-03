@@ -7,5 +7,6 @@ namespace Ranker
         public ulong Guild { get; set; }
         public ulong Level { get; set; }
         public ulong RoleId { get; set; }
+        public string RoleName { get; set; }
     }
 }

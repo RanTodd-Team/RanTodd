@@ -1,5 +1,6 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,23 +8,41 @@ using System.Threading.Tasks;
 
 namespace Ranker
 {
-    public class MessageEvent : BaseExtension
+    public class Events : BaseExtension
     {
         private readonly IDatabase _database;
 
-        public MessageEvent(IDatabase database)
+        public Events(IDatabase database)
         {
             _database = database;
         }
 
         protected override void Setup(DiscordClient client)
         {
+            client.Ready += Client_Ready;
+            client.GuildAvailable += Client_GuildAvaliable;
             client.GuildMemberAdded += Client_GuildMemberAdded;
             client.GuildMemberUpdated += Client_GuildMemberUpdated;
+            client.GuildRoleUpdated += Client_GuildRoleUpdated;
             client.MessageCreated += Client_MessageCreated;
         }
 
-        private async Task Client_GuildMemberUpdated(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs e)
+        private Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e)
+        {
+            sender.Logger.LogInformation("Bot is ready!");
+            return Task.CompletedTask;
+        }
+
+        private async Task Client_GuildAvaliable(DiscordClient sender, DSharpPlus.EventArgs.GuildCreateEventArgs e)
+        {
+            List<Role> roles = await _database.GetRolesAsync(e.Guild.Id);
+            roles.ForEach(async role =>
+            {
+                await _database.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.Guild.GetRole(role.RoleId).Name);
+            });
+        }
+
+    private async Task Client_GuildMemberUpdated(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs e)
         {
             if (e.Member.IsBot) return;
 
@@ -46,6 +65,16 @@ namespace Ranker
                 LastCreditDate = DateTimeOffset.UnixEpoch
             };
             await _database.UpsertAsync(e.Member.Id, e.Guild.Id, rank);
+        }
+
+        private async Task Client_Guild​Role​Update​d(DiscordClient sender, DSharpPlus.EventArgs.Guild​Role​Update​Event​Args e)
+        {
+            List<Role> roles = await _database.GetRolesAsync(e.Guild.Id);
+            Role role = roles.Find(x => x.RoleId == e.RoleAfter.Id);
+            if (role != null)
+            {
+                await _database.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.RoleAfter.Name);
+            }
         }
 
         private async Task Client_MessageCreated(DiscordClient sender, DSharpPlus.EventArgs.MessageCreateEventArgs e)

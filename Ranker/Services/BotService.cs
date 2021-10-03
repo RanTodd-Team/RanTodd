@@ -37,7 +37,7 @@ namespace Ranker
 
             client = new(configuration);
 
-            client.AddExtension(new MessageEvent(database));
+            client.AddExtension(new Events(database));
 
             ServiceCollection servCollection = new();
             servCollection.AddSingleton(database);
@@ -72,12 +72,6 @@ namespace Ranker
             });
 
             commands.RegisterCommands<NormalCommands>();
-
-            client.Ready += (s, e) =>
-            {
-                s.Logger.LogInformation("Bot is ready!");
-                return Task.CompletedTask;
-            };
 
             await client.ConnectAsync();
         }
