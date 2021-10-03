@@ -36,7 +36,7 @@ namespace Ranker
                     JToken jsonParsed = JToken.Parse(responseJson);
                     IEnumerable<Rank> ranks = (await _database.GetAsync())
                         .Where(f => f.Guild == id)
-                        .OrderByDescending(f => f.Xp)
+                        .OrderByDescending(f => f.TotalXp)
                         .Skip(page * 100)
                         .Take(100);
 
