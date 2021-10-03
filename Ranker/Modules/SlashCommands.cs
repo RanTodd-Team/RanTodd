@@ -49,15 +49,11 @@ namespace Ranker
                     stream = await Commands.RankZeealeid(_database, ctx.Guild, user, rank);
                 }
 
-                try
-                {
-                    await ctx.Member.SendMessageAsync(new DiscordMessageBuilder().WithFile("rank.png", stream));
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("I have sent the rank card to you via DM."));
-                }
-                catch
-                {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, but I cannot send a DM to you. Can you check if DM from members is enabled?"));
-                }
+                DiscordWebhookBuilder builder = new DiscordWebhookBuilder();
+
+                builder.AddFile("rank.png", stream);
+
+                await ctx.EditResponseAsync(builder);
             } 
             else await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("You aren't ranked yet. Send some messages first, then try again."));
 
