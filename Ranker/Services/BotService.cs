@@ -20,8 +20,6 @@ namespace Ranker
         IDatabase database;
         ConfigJson configJson;
 
-        private static BotService _instance;
-
         public BotService(ConfigJson config, IDatabase database)
         {
             configJson = config;
@@ -37,7 +35,7 @@ namespace Ranker
                 Intents = DiscordIntents.GuildMembers | DiscordIntents.GuildMessages | DiscordIntents.Guilds
             };
 
-            DiscordClient client = new(configuration);
+            client = new(configuration);
 
             client.AddExtension(new MessageEvent(database));
 
