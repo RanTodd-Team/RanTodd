@@ -40,6 +40,8 @@ namespace Ranker
                         .Skip(page * 100)
                         .Take(100);
 
+                    List<Role> roles = await _database.GetRolesAsync(); 
+
                     return Ok(new Dictionary<string, object>()
                     {
                         {
@@ -52,6 +54,7 @@ namespace Ranker
                                 { "is_joinable", jsonParsed["rules_channel_id"] != null }
                             }
                         },
+                        { "roles", roles },
                         { "players", ranks }
                     });
                 }
