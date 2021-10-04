@@ -17,8 +17,10 @@ Make sure your database has the following tables that store the following inform
   - Avatar (string)
   - Fleuron (boolean)
 - Role
-  - Id (unsigned 64-bit integer)
+  - Id (string)
   - Level (unsigned 64-bit integer)
+  - GuildId (unsigned 64-bit integer)
+  - RoleId (unsigned 64-bit integer)
 
 ## Writing code for your custom database.
 Create a new file in the `Ranker\Data` folder with a `.cs` extension. For example, `TestDatabase.cs`.
@@ -46,7 +48,10 @@ namespace Ranker
         public Task UpsertAsync(ulong userId, ulong guildId, Rank newRank)
         { }
         
-        public Task UpsertAsync(ulong level, ulong id)
+        public Task UpsertAsync(ulong guildId, ulong level, ulong roleId, string roleName)
+        { }
+        
+        public Task RemoveAsync(ulong guildId, ulong level)
         { }
     }
 }
