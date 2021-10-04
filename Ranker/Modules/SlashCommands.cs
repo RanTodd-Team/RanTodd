@@ -55,8 +55,10 @@ namespace Ranker
 
                 await ctx.EditResponseAsync(builder);
             } 
-            else await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("You aren't ranked yet. Send some messages first, then try again."));
-
+            else if (user.Id == ctx.User.Id) 
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("You aren't ranked yet. Send some messages first, then try again."));
+            else
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("This member isn't ranked yet."));
         }
 
         [SlashCommand("role", "Configures a level up role.")]
