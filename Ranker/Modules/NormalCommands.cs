@@ -55,8 +55,10 @@ namespace Ranker
                 catch
                 { }
             } 
-            else await ctx.RespondAsync("You aren't ranked yet. Send some messages first, then try again.");
-
+            else if (user.Id == ctx.User.Id)
+                await ctx.RespondAsync("You aren't ranked yet. Send some messages first, then try again.");
+            else
+                await ctx.RespondAsync("This member isn't ranked yet.");
         }
     }
 }
