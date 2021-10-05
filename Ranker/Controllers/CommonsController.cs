@@ -42,7 +42,7 @@ namespace Ranker
 
                         var ready = jsonParsed.Intersect(jsonParsed2);
                         var jsonObjects = ready.Select(f => f.ToString());
-                        var parsedJson = $"[{string.Join(", ", jsonObjects)}]"
+                        var parsedJson = $"[{string.Join(", ", jsonObjects)}]";
 
                         return Ok(parsedJson);
                     }
