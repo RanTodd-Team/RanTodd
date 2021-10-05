@@ -26,7 +26,7 @@ namespace Ranker
                                   {
                                       builder
                                         .AllowAnyOrigin()
-					                              .AllowAnyHeader();
+					                    .AllowAnyHeader();
                                   });
             });
 
