@@ -14,5 +14,7 @@ namespace Ranker
         public ulong? GuildId { get; set; }
 
         public string[] Prefixes { get; set; }
+
+        public string ClientId { get; set; }
     }
 }

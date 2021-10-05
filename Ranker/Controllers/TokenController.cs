@@ -29,8 +29,8 @@ namespace Ranker
                 using (HttpClient client = new())
                 {
                     Dictionary<string, string> dictionary = new Dictionary<string, string>() {
-                        { "client_id", configJson.Client.Id },
-                        { "client_secret", configJson.Client.Secret },
+                        { "client_id", configJson.ClientId },
+                        { "client_secret", Environment.GetEnvironmentVariable("RANKER_CLIENT_SECRET") },
                         { "grant_type", "authorization_code" },
                         { "code", Request.Headers["Code"] },
                         { "redirect_uri", "http://localhost:8000/callback" },
