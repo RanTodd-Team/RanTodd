@@ -17,10 +17,10 @@ namespace Ranker
     public class BotService : IHostedService
     {
         DiscordClient client;
-        IDatabase database;
+        IRankerRepository database;
         ConfigJson configJson;
 
-        public BotService(ConfigJson config, IDatabase database)
+        public BotService(ConfigJson config, IRankerRepository database)
         {
             configJson = config;
             this.database = database;

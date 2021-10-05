@@ -40,15 +40,7 @@ namespace Ranker
                         responseJson = await response.Content.ReadAsStringAsync();
                         JArray jsonParsed2 = JArray.Parse(responseJson);
 
-                        JArray ready = jsonParsed;
-
-                        jsonParsed.ToList().Select(x => x["id"].Value<string>()).ToList().Except(jsonParsed2.ToList().Select(x => x["id"].Value<string>()).ToList()).ToList().ForEach(nony => {
-                            int index = ready.ToList().FindIndex(x => x["id"].Value<string>() == nony);
-                            if (index > -1)
-                            {
-                                ready.RemoveAt(index);
-                            }
-                        });
+                        var ready = jsonParsed.Intersect(jsonParsed2);
 
                         return Ok(JsonConvert.SerializeObject(ready));
                     }

@@ -20,8 +20,8 @@ namespace Ranker
 {
     public class NormalCommands : BaseCommandModule
     {
-        private readonly IDatabase _database;
-        public NormalCommands(IDatabase database)
+        private readonly IRankerRepository _database;
+        public NormalCommands(IRankerRepository database)
         {
             _database = database;
         }
@@ -34,8 +34,8 @@ namespace Ranker
             {
                 user = ctx.User;
             }
-            Rank currentUserRank = await _database.GetAsync(ctx.User.Id, ctx.Guild.Id);
-            Rank rank = await _database.GetAsync(user.Id, ctx.Guild.Id);
+            Rank currentUserRank = await _database.Ranks.GetAsync(ctx.User.Id, ctx.Guild.Id);
+            Rank rank = await _database.Ranks.GetAsync(user.Id, ctx.Guild.Id);
             if (rank.Xp > 0) 
             {
                 MemoryStream stream;

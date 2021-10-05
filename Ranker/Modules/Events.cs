@@ -10,9 +10,9 @@ namespace Ranker
 {
     public class Events : BaseExtension
     {
-        private readonly IDatabase _database;
+        private readonly IRankerRepository _database;
 
-        public Events(IDatabase database)
+        public Events(IRankerRepository database)
         {
             _database = database;
         }
@@ -35,10 +35,10 @@ namespace Ranker
 
         private async Task Client_GuildAvaliable(DiscordClient sender, DSharpPlus.EventArgs.GuildCreateEventArgs e)
         {
-            List<Role> roles = await _database.GetRolesAsync(e.Guild.Id);
+            List<Role> roles = await _database.Roles.GetAsync(e.Guild.Id);
             roles.ForEach(async role =>
             {
-                await _database.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.Guild.GetRole(role.RoleId).Name);
+                await _database.Roles.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.Guild.GetRole(role.RoleId).Name);
             });
         }
 
@@ -46,11 +46,11 @@ namespace Ranker
         {
             if (e.Member.IsBot) return;
 
-            Rank rank = await _database.GetAsync(e.Member.Id, e.Guild.Id);
+            Rank rank = await _database.Ranks.GetAsync(e.Member.Id, e.Guild.Id);
             rank.Avatar = e.Member.GuildAvatarUrl;
             rank.Discriminator = e.Member.Discriminator;
             rank.Username = e.Member.Username;
-            await _database.UpsertAsync(e.Member.Id, e.Guild.Id, rank);
+            await _database.Ranks.UpsertAsync(e.Member.Id, e.Guild.Id, rank);
         }
 
         private async Task Client_GuildMemberAdded(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberAddEventArgs e)
@@ -64,16 +64,16 @@ namespace Ranker
                 Discriminator = e.Member.Discriminator,
                 LastCreditDate = DateTimeOffset.UnixEpoch
             };
-            await _database.UpsertAsync(e.Member.Id, e.Guild.Id, rank);
+            await _database.Ranks.UpsertAsync(e.Member.Id, e.Guild.Id, rank);
         }
 
         private async Task Client_Guild​Role​Update​d(DiscordClient sender, DSharpPlus.EventArgs.Guild​Role​Update​Event​Args e)
         {
-            List<Role> roles = await _database.GetRolesAsync(e.Guild.Id);
+            List<Role> roles = await _database.Roles.GetAsync(e.Guild.Id);
             Role role = roles.Find(x => x.RoleId == e.RoleAfter.Id);
             if (role != null)
             {
-                await _database.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.RoleAfter.Name);
+                await _database.Roles.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.RoleAfter.Name);
             }
         }
 
@@ -81,7 +81,7 @@ namespace Ranker
         {
             if (e.Author.IsBot) return;
 
-            Rank rank = await _database.GetAsync(e.Author.Id, e.Guild.Id);
+            Rank rank = await _database.Ranks.GetAsync(e.Author.Id, e.Guild.Id);
             rank.Avatar = e.Author.AvatarUrl;
             rank.Username = e.Author.Username;
             rank.Discriminator = e.Author.Discriminator;
@@ -100,7 +100,7 @@ namespace Ranker
                     rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * rank.Level) + 100);
                     try
                     {
-                        List<Role> roles = await _database.GetRolesAsync(e.Guild.Id);
+                        List<Role> roles = await _database.Roles.GetAsync(e.Guild.Id);
                         int currentRoleIndex = roles.FindIndex(x => x.Level == rank.Level);
                         ulong roleId = roles[currentRoleIndex]?.RoleId ?? 0;
                         DiscordMember member = await e.Guild.GetMemberAsync(e.Author.Id);
@@ -112,7 +112,7 @@ namespace Ranker
                 }
             }
 
-            await _database.UpsertAsync(e.Author.Id, e.Guild.Id, rank);
+            await _database.Ranks.UpsertAsync(e.Author.Id, e.Guild.Id, rank);
         }
     }
 }

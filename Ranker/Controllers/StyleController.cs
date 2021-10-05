@@ -13,9 +13,9 @@ namespace Ranker
     [Route("[controller]")]
     public class StyleController : Controller
     {
-        private readonly IDatabase _database;
+        private readonly IRankerRepository _database;
 
-        public StyleController(IDatabase database)
+        public StyleController(IRankerRepository database)
         {
             _database = database;
         }
@@ -35,7 +35,7 @@ namespace Ranker
                     string responseJson = await response.Content.ReadAsStringAsync();
                     JObject jsonParsed = JObject.Parse(responseJson);
                     ulong userId = ulong.Parse(jsonParsed["id"].Value<string>());
-                    Rank rankCard = await _database.GetAsync(userId, guildId);
+                    Rank rankCard = await _database.Ranks.GetAsync(userId, guildId);
                     return Ok(new Dictionary<string, bool>(){
                         { "fleuron", rankCard.Fleuron }
                     });
@@ -62,7 +62,7 @@ namespace Ranker
                     string responseJson = await response.Content.ReadAsStringAsync();
                     JObject jsonParsed = JObject.Parse(responseJson);
                     ulong userId = ulong.Parse(jsonParsed["id"].Value<string>());
-                    Rank rankCard = await _database.GetAsync(userId, guildId);
+                    Rank rankCard = await _database.Ranks.GetAsync(userId, guildId);
                     using (StreamReader stream = new StreamReader(Request.Body))
                     {
                         rankCard.Fleuron = JObject.Parse(await stream.ReadToEndAsync())["fleuron"].Value<bool>();

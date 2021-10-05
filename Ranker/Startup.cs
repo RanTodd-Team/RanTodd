@@ -45,7 +45,7 @@ namespace Ranker
             }
 
             ConfigJson configJson = JsonConvert.DeserializeObject<ConfigJson>(File.ReadAllText("config.json"));
-            IDatabase database = new SQLiteDatabase(Path.Combine(folder, "Ranker.db"));
+            IRankerRepository database = new SQLiteRankerRepository(Path.Combine(folder, "Ranker.db"));
 
             services.AddSingleton(database);
             services.AddSingleton(configJson);
