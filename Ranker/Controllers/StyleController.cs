@@ -66,7 +66,7 @@ namespace Ranker
                     using (StreamReader stream = new StreamReader(Request.Body))
                     {
                         rankCard.Fleuron = JObject.Parse(await stream.ReadToEndAsync())["fleuron"].Value<bool>();
-                        await _database.UpsertAsync(userId, guildId, rankCard);
+                        await _database.Ranks.UpsertAsync(userId, guildId, rankCard);
                         return Ok(new Dictionary<string, bool>(){
                         { "fleuron", rankCard.Fleuron }
                     });
