@@ -15,5 +15,5 @@ We'd like to thank our contributors for making this possible.
 - [@zeealeid](https://github.com/zeealeid): Ranker's main rank card main designer.
 - [@KojiOdyssey](https://github.com/KojiOdyssey), [@dAKirby309](https://github.com/dAKirby309), [@itsWindows11](https://github.com/itsWindows11): Ranker's main rank card design collaborators.
 - [Fleuron](https://discord.com/users/188482204601548800): Ranker's second rank card designer.
-- [Erisa](https://github.com/Erisa): Initial Docker support
+- [@Erisa](https://github.com/Erisa): Initial Docker support
 
