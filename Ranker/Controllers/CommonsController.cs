@@ -44,7 +44,7 @@ namespace Ranker
                         var jsonObjects = ready.Select(f => f.ToString());
                         var parsedJson = $"[{string.Join(", ", jsonObjects)}]"
 
-                        return Ok(JsonConvert.SerializeObject(ready));
+                        return Ok(parsedJson);
                     }
 
                 }
