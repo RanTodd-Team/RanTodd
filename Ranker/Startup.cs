@@ -24,7 +24,8 @@ namespace Ranker
                 options.AddPolicy(name: Cors,
                                   builder =>
                                   {
-                                      builder.AllowAnyOrigin();
+                                      builder.AllowAnyOrigin()
+                                             .AllowAnyHeader();
                                   });
             });
 
