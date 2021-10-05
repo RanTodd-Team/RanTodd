@@ -22,7 +22,7 @@ namespace Ranker
     {
 
         // Designed by Zeealeid
-        public async static Task<MemoryStream> RankZeealeid(IDatabase _database, DiscordGuild guild, DiscordUser user, Rank rank)
+        public async static Task<MemoryStream> RankZeealeid(IRankerRepository _database, DiscordGuild guild, DiscordUser user, Rank rank)
         {
             string preUsername = String.Join("", (rank.Username ?? user.Username).Take(13).ToArray());
             string username = preUsername + (preUsername != (rank.Username ?? user.Username) ? "..." : "");
@@ -33,7 +33,7 @@ namespace Ranker
             ulong gottenXp = rank.Xp;
             ulong maxXp = rank.NextXp;
 
-            var list = (await _database.GetAsync()).FindAll(x => x.Guild == guild.Id).OrderByDescending(f => f.Xp).ToList();
+            var list = (await _database.Ranks.GetAsync(guild.Id)).OrderByDescending(f => f.Xp).ToList();
 
             int leader = list.IndexOf(list.FirstOrDefault(f => f.User == user.Id)) + 1;
 
@@ -105,7 +105,7 @@ namespace Ranker
         }
 
         // Designed by Fleuron
-        public async static Task<MemoryStream> RankFleuron(IDatabase _database, DiscordGuild guild, DiscordUser user, Rank rank)
+        public async static Task<MemoryStream> RankFleuron(IRankerRepository _database, DiscordGuild guild, DiscordUser user, Rank rank)
         {
             string preUsername = String.Join("", (rank.Username ?? user.Username).Take(13).ToArray());
             string username = preUsername + (preUsername != (rank.Username ?? user.Username) ? "..." : "");
@@ -116,7 +116,7 @@ namespace Ranker
             ulong gottenXp = rank.Xp;
             ulong maxXp = rank.NextXp;
 
-            var list = (await _database.GetAsync()).FindAll(x => x.Guild == guild.Id).OrderByDescending(f => f.Xp).ToList();
+            var list = (await _database.Ranks.GetAsync(guild.Id)).OrderByDescending(f => f.Xp).ToList();
 
             int leader = list.IndexOf(list.FirstOrDefault(f => f.User == user.Id)) + 1;
 

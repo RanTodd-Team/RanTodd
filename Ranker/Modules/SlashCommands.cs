@@ -20,8 +20,8 @@ namespace Ranker
 {
     public class SlashCommands : ApplicationCommandModule
     {
-        private readonly IDatabase _database;
-        public SlashCommands(IDatabase database)
+        private readonly IRankerRepository _database;
+        public SlashCommands(IRankerRepository database)
         {
             _database = database;
         }
@@ -36,8 +36,8 @@ namespace Ranker
             {
                 user = ctx.User;
             }
-            Rank currentUserRank = await _database.GetAsync(ctx.User.Id, ctx.Guild.Id);
-            Rank rank = await _database.GetAsync(user.Id, ctx.Guild.Id);
+            Rank currentUserRank = await _database.Ranks.GetAsync(ctx.User.Id, ctx.Guild.Id);
+            Rank rank = await _database.Ranks.GetAsync(user.Id, ctx.Guild.Id);
             if (rank.Xp > 0) 
             {
                 MemoryStream stream;
@@ -70,11 +70,11 @@ namespace Ranker
                 new DiscordInteractionResponseBuilder().AsEphemeral(true));
             if (role == null)
             {
-                await _database.RemoveAsync(ctx.Guild.Id, (ulong)level);
+                await _database.Roles.RemoveAsync(ctx.Guild.Id, (ulong)level);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role deconfigured!"));
             } else
             {
-                await _database.UpsertAsync(ctx.Guild.Id, (ulong)level, role.Id, role.Name);
+                await _database.Roles.UpsertAsync(ctx.Guild.Id, (ulong)level, role.Id, role.Name);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role configured!"));
             }
             
@@ -87,7 +87,7 @@ namespace Ranker
                 InteractionResponseType.DeferredChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AsEphemeral(true));
 
-            Rank rank = await _database.GetAsync(ctx.Member.Id, ctx.Guild.Id);
+            Rank rank = await _database.Ranks.GetAsync(ctx.Member.Id, ctx.Guild.Id);
 
             if (enabled)
             {
@@ -99,7 +99,7 @@ namespace Ranker
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Flueron's style disabled!"));
             }
 
-            await _database.UpsertAsync(ctx.Member.Id, ctx.Guild.Id, rank);
+            await _database.Ranks.UpsertAsync(ctx.Member.Id, ctx.Guild.Id, rank);
         }
 
         [SlashCommand("levels", "Send leaderboard.")]

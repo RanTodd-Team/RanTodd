@@ -12,9 +12,9 @@ namespace Ranker
     [Route("[controller]")]
     public class LevelsController : Controller
     {
-        private readonly IDatabase _database;
+        private readonly IRankerRepository _database;
 
-        public LevelsController(IDatabase database)
+        public LevelsController(IRankerRepository database)
         {
             _database = database;
         }
@@ -34,13 +34,12 @@ namespace Ranker
                     var response = await client.GetAsync($"https://discord.com/api/v9/guilds/{id}");
                     string responseJson = await response.Content.ReadAsStringAsync();
                     JToken jsonParsed = JToken.Parse(responseJson);
-                    IEnumerable<Rank> ranks = (await _database.GetAsync())
-                        .Where(f => f.Guild == id)
+                    IEnumerable<Rank> ranks = (await _database.Ranks.GetAsync(id))
                         .OrderByDescending(f => f.TotalXp)
                         .Skip(page * 100)
                         .Take(100);
 
-                    List<Role> roles = await _database.GetRolesAsync(id); 
+                    List<Role> roles = await _database.Roles.GetAsync(id); 
 
                     return Ok(new Dictionary<string, object>()
                     {
