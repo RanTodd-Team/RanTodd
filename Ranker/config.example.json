@@ -2,5 +2,12 @@
   "Domain": "[DOMAIN]",
   "GuildId": null,
   "Prefixes": [ "!" ],
+<<<<<<< Updated upstream
   "ClientId": "[CLIENT ID]"
+=======
+  "client": {
+    "id": "[CLIENT ID]",
+    "secret": "[CLIENT SECRET]"
+  }
+>>>>>>> Stashed changes
 }
