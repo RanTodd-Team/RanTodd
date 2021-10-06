@@ -126,5 +126,26 @@ namespace Ranker
                 new DiscordInteractionResponseBuilder().AsEphemeral(true));
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("https://www.youtube.com/watch?v=CBpSGsT7L6s"));
         }
+
+        [SlashCommand("migrate", "Migrates MEE6's data.")]
+        public async Task MigrateCommand(InteractionContext ctx)
+        {
+            if (ctx.Member.IsOwner)
+            {
+                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                var continueButton = new DiscordButtonComponent(ButtonStyle.Success, "continue", "Start migration");
+
+                var cancelButton = new DiscordButtonComponent(ButtonStyle.Danger, "cancel", "Cancel");
+
+                DiscordWebhookBuilder webhook = new DiscordWebhookBuilder();
+
+                webhook.WithContent("Running this command will DELETE all ranking and roles data and REPLACE it with the one this server had with MEE6. Do you want to CONTINUE?");
+
+                webhook.AddComponents(continueButton, cancelButton);
+
+                await ctx.EditResponseAsync(webhook);
+            }
+        }
     }
 }

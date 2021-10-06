@@ -22,5 +22,11 @@ namespace Ranker
         /// </summary>
         /// <param name="newRank">The new rank.</param>
         Task UpsertAsync(ulong userId, ulong guildId, Rank newRank);
+
+        /// <summary>
+        /// Empties ranks.
+        /// </summary>
+        /// <param name="guildId">The guild id.</param>
+        Task Empty(ulong guildId);
     }
 }

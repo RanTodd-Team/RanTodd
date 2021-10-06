@@ -1,9 +1,11 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Ranker
@@ -24,7 +26,9 @@ namespace Ranker
             client.GuildMemberAdded += Client_GuildMemberAdded;
             client.GuildMemberUpdated += Client_GuildMemberUpdated;
             client.GuildRoleUpdated += Client_GuildRoleUpdated;
+            client.GuildRoleDeleted += Client_GuildRoleDeleted;
             client.MessageCreated += Client_MessageCreated;
+            client.ComponentInteractionCreated += Client_ComponentInteractionCreated;
         }
 
         private Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs e)
@@ -38,7 +42,13 @@ namespace Ranker
             List<Role> roles = await _database.Roles.GetAsync(e.Guild.Id);
             roles.ForEach(async role =>
             {
-                await _database.Roles.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.Guild.GetRole(role.RoleId).Name);
+                try
+                {
+                    await _database.Roles.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.Guild.GetRole(role.RoleId).Name);
+                } catch
+                {
+                    await _database.Roles.RemoveAsync(e.Guild.Id, role.Level);
+                }
             });
         }
 
@@ -74,6 +84,16 @@ namespace Ranker
             if (role != null)
             {
                 await _database.Roles.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.RoleAfter.Name);
+            }
+        }
+
+        private async Task Client_Guild​Role​Deleted(DiscordClient sender, DSharpPlus.EventArgs.Guild​RoleDelete​Event​Args e)
+        {
+            List<Role> roles = await _database.Roles.GetAsync(e.Guild.Id);
+            Role role = roles.Find(x => x.RoleId == e.Role.Id);
+            if (role != null)
+            {
+                await _database.Roles.RemoveAsync(e.Guild.Id, role.Level);
             }
         }
 
@@ -114,5 +134,73 @@ namespace Ranker
 
             await _database.Ranks.UpsertAsync(e.Author.Id, e.Guild.Id, rank);
         }
+
+        private async Task Client_ComponentInteractionCreated(DiscordClient sender, DSharpPlus.EventArgs.ComponentInteractionCreateEventArgs e)
+        {
+            if (e.User.Id == e.Guild.OwnerId) {
+                if (e.Id == "continue")
+                {
+                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. Even if it may appear to be stuck, we're still working. We will notify you when we're done."));
+
+                    await _database.Roles.Empty(e.Guild.Id);
+                    await _database.Ranks.Empty(e.Guild.Id);
+                    bool hasPlayers = true;
+                    int times = 0;
+                    while (hasPlayers)
+                    {
+                        try
+                        {
+                            using (HttpClient client = new())
+                            {
+                                var response = await client.GetAsync("https://mee6.xyz/api/plugins/levels/leaderboard/" + e.Guild.Id.ToString() + "?page=" + times.ToString());
+                                string responseJson = await response.Content.ReadAsStringAsync();
+                                JObject jsonParsed = JObject.Parse(responseJson);
+                                Console.WriteLine(times);
+                                if(times == 0)
+                                {
+                                    jsonParsed["role_rewards"].Value<JArray>().ToList().ForEach(role =>
+                                    {
+                                        _database.Roles.UpsertAsync(e.Guild.Id, role["rank"].Value<ulong>(), ulong.Parse(role["role"]["id"].Value<string>()), role["role"]["name"].Value<string>());
+                                    });
+                                }
+                                if (jsonParsed["players"].Value<JArray>().Count != 0)
+                                {
+                                    jsonParsed["players"].Value<JArray>().ToList().ForEach(player =>
+                                    {
+                                        Rank rank = new Rank();
+                                        rank.LastCreditDate = DateTimeOffset.MinValue; // We just empty it
+                                        rank.Messages = player["message_count"].Value<ulong>();
+                                        rank.NextXp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>();
+                                        rank.Level = player["level"].Value<ulong>();
+                                        rank.TotalXp = player["xp"].Value<ulong>();
+                                        rank.Guild = e.Guild.Id;
+                                        string userId = player["id"].Value<string>();
+                                        rank.User = ulong.Parse(userId);
+                                        rank.Username = player["username"].Value<string>();
+                                        rank.Discriminator = player["discriminator"].Value<string>();
+                                        string avatarHash = player["avatar"].Value<string>();
+                                        rank.Avatar = avatarHash != "" ? "https://cdn.discordapp.com/avatars/" + userId + "/" + avatarHash + ".png?size=1024" : "https://cdn.discordapp.com/embed/avatars/1.png";
+                                        rank.Fleuron = false;
+                                        _database.Ranks.UpsertAsync(ulong.Parse(userId), e.Guild.Id, rank);
+                                    });
+                                    times++;
+                                }
+                                else
+                                {
+                                    hasPlayers = false;
+                                }
+                            }
+                        }
+                        catch { }
+                    }
+
+                    await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
+                } else
+                {
+                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Migration cancelled."));
+                }
+            }
+        }
     }
 }
+    

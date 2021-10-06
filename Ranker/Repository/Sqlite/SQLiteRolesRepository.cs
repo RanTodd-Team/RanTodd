@@ -88,5 +88,17 @@ namespace Ranker
                 }
             });
         }
+
+        public Task Empty(ulong guildId)
+        {
+            return Task.Run(() =>
+            {
+                var list = db.Table<SQLiteData>().ToList();
+                foreach (SQLiteData role in list.FindAll(x => x.Guild == guildId.ToString()))
+                {
+                    db.Delete<SQLiteData>(role.Id);
+                }
+            });
+        }
     }
 }

@@ -26,5 +26,11 @@ namespace Ranker
         /// <param name="guildId">The guild id.</param>
         /// <param name="level">The role level.</param>
         Task RemoveAsync(ulong guildId, ulong level);
+
+        /// <summary>
+        /// Empties roles.
+        /// </summary>
+        /// <param name="guildId">The guild id.</param>
+        Task Empty(ulong guildId);
     }
 }

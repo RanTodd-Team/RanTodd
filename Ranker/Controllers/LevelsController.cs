@@ -53,7 +53,7 @@ namespace Ranker
                                 { "is_joinable", jsonParsed["rules_channel_id"] != null }
                             }
                         },
-                        { "roles", roles },
+                        { "roles", roles.OrderBy(x => x.Level) },
                         { "players", ranks }
                     });
                 }
