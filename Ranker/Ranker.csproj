@@ -13,7 +13,7 @@
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
     <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-01024" />
     <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0-nightly-01022" />
-    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.2.0-nightly-01022" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.2.0-nightly-01024" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="DSharpPlus.CommandsNext" />
