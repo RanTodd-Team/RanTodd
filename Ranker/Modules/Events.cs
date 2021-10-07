@@ -141,7 +141,7 @@ namespace Ranker
             if (e.User.Id == e.Guild.OwnerId) {
                 if (e.Id == "continue")
                 {
-                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. Even if it may appear to be stuck, we're still working. We will notify you when we're done."));
+                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. Even if it may appear to be stuck, we're still working. We will notify you when we're done. You can check console for the logged pages if you're self-hosting."));
 
                     await _database.Roles.Empty(e.Guild.Id);
                     await _database.Ranks.Empty(e.Guild.Id);
@@ -156,7 +156,7 @@ namespace Ranker
                                 var response = await client.GetAsync("https://mee6.xyz/api/plugins/levels/leaderboard/" + e.Guild.Id.ToString() + "?page=" + times.ToString());
                                 string responseJson = await response.Content.ReadAsStringAsync();
                                 JObject jsonParsed = JObject.Parse(responseJson);
-                                Console.WriteLine(times);
+                                Console.WriteLine("Migrated " + times + " pages.");
                                 if(times == 0)
                                 {
                                     jsonParsed["role_rewards"].Value<JArray>().ToList().ForEach(role =>
