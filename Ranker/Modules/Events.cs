@@ -167,20 +167,22 @@ namespace Ranker
                                 {
                                     jsonParsed["players"].Value<JArray>().ToList().ForEach(player =>
                                     {
-                                        Rank rank = new Rank();
-                                        rank.LastCreditDate = DateTimeOffset.MinValue; // We just empty it
-                                        rank.Messages = player["message_count"].Value<ulong>();
-                                        rank.NextXp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>();
-                                        rank.Level = player["level"].Value<ulong>();
-                                        rank.TotalXp = player["xp"].Value<ulong>();
-                                        rank.Guild = e.Guild.Id;
                                         string userId = player["id"].Value<string>();
-                                        rank.User = ulong.Parse(userId);
-                                        rank.Username = player["username"].Value<string>();
-                                        rank.Discriminator = player["discriminator"].Value<string>();
                                         string avatarHash = player["avatar"].Value<string>();
-                                        rank.Avatar = avatarHash != "" ? "https://cdn.discordapp.com/avatars/" + userId + "/" + avatarHash + ".png?size=1024" : "https://cdn.discordapp.com/embed/avatars/1.png";
-                                        rank.Fleuron = false;
+                                        Rank rank = new Rank()
+                                        {
+                                            LastCreditDate = DateTimeOffset.MinValue, // We just empty it
+                                            Messages = player["message_count"].Value<ulong>(),
+                                            NextXp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>(),
+                                            Level = player["level"].Value<ulong>(),
+                                            TotalXp = player["xp"].Value<ulong>(),
+                                            Guild = e.Guild.Id,
+                                            User = ulong.Parse(userId),
+                                            Username = player["username"].Value<string>(),
+                                            Discriminator = player["discriminator"].Value<string>(),
+                                            Avatar = avatarHash != "" ? "https://cdn.discordapp.com/avatars/" + userId + "/" + avatarHash + ".png?size=1024" : "https://cdn.discordapp.com/embed/avatars/1.png",
+                                            Fleuron = false
+                                        };
                                         _database.Ranks.UpsertAsync(ulong.Parse(userId), e.Guild.Id, rank);
                                     });
                                     times++;
