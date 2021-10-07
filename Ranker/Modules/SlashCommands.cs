@@ -150,7 +150,7 @@ namespace Ranker
 
         [SlashCommand("range", "Changes range of XP winned.")]
         [SlashRequireUserPermissions(Permissions.ManageGuild)]
-        public async Task RangeCommand(InteractionContext ctx, [Option("min", "Minimum XP that can be win")] long min, [Option("max", "Minimum XP that can be win")] long max)
+        public async Task RangeCommand(InteractionContext ctx, [Option("min", "Minimum XP that can be win")] long min, [Option("max", "Maximum XP that can be win")] long max)
         {
             await ctx.CreateResponseAsync(
                 InteractionResponseType.DeferredChannelMessageWithSource,
