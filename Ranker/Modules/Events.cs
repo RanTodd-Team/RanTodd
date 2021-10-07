@@ -174,7 +174,8 @@ namespace Ranker
                                         {
                                             LastCreditDate = DateTimeOffset.MinValue, // We just empty it
                                             Messages = player["message_count"].Value<ulong>(),
-                                            NextXp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>(),
+                                            Xp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>(),
+                                            NextXp = player["detailed_xp"].Value<JArray>()[1].Value<ulong>(),
                                             Level = player["level"].Value<ulong>(),
                                             TotalXp = player["xp"].Value<ulong>(),
                                             Guild = e.Guild.Id,
