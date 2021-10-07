@@ -6,9 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,17 +50,9 @@ namespace Ranker
                 
                 await e.Context.DeleteResponseAsync();
 
-                bool botOwner = s.Client.CurrentApplication.Owners.Any(x => x.Id == e.Context.User.Id);
-                
-                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
-                    .WithTitle("Error")
-                    .WithColor(DiscordColor.Red)
-                    .WithDescription(botOwner ? $"```{e.Exception}```" : "Please contact the bot owner to get more information.");
-
                 await e.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, 
                     new DiscordInteractionResponseBuilder()
-                        .WithContent("Something went wrong!")
-                        .AddEmbed(embed)
+                        .WithContent("Something went wrong! Please contact the bot owner to get more information.")
                         .AsEphemeral(true));
             };
 
