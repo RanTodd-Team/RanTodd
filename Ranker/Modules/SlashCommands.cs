@@ -147,5 +147,21 @@ namespace Ranker
                 await ctx.EditResponseAsync(webhook);
             }
         }
+
+        [SlashCommand("range", "Changes range of XP winned.")]
+        [SlashRequireUserPermissions(Permissions.ManageGuild)]
+        public async Task RangeCommand(InteractionContext ctx, [Option("min", "Minimum XP that can be win")] long min, [Option("max", "Minimum XP that can be win")] long max)
+        {
+            await ctx.CreateResponseAsync(
+                InteractionResponseType.DeferredChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AsEphemeral(true));
+
+            Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
+            settings.MinRange = Convert.ToInt32(min);
+            settings.MaxRange = Convert.ToInt32(max) + 1;
+            await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
+
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Range updated successfully!"));
+        }
     }
 }

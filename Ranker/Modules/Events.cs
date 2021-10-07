@@ -109,7 +109,8 @@ namespace Ranker
             
             if (e.Message.CreationTimestamp >= rank.LastCreditDate.AddMinutes(1))
             {
-                ulong newXp = Convert.ToUInt64(new Random().Next(15, 26));
+                Settings settings = await _database.Settings.GetAsync(e.Guild.Id);
+                ulong newXp = Convert.ToUInt64(new Random().Next(settings.MinRange, settings.MaxRange));
                 rank.Xp += newXp;
                 rank.TotalXp += newXp;
                 rank.LastCreditDate = e.Message.CreationTimestamp;
