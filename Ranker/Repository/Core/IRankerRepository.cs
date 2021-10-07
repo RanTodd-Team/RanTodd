@@ -10,5 +10,7 @@ namespace Ranker
         IRanksRepository Ranks { get; }
 
         IRolesRepository Roles { get; }
+
+        ISettingsRepository Settings { get; }
     }
 }
