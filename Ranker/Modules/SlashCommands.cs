@@ -71,7 +71,7 @@ namespace Ranker
             Rank rank = await _database.Ranks.GetAsync(ctx.TargetMember.Id, ctx.Guild.Id);
             if (rank.Xp > 0)
             {
-                MemoryStream stream;
+                 MemoryStream stream;
                 if (currentUserRank.Fleuron)
                 {
                     stream = await Commands.RankFleuron(_database, ctx.Guild, ctx.TargetMember, rank);
@@ -181,12 +181,19 @@ namespace Ranker
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
-            settings.MinRange = Convert.ToInt32(min);
-            settings.MaxRange = Convert.ToInt32(max) + 1;
-            await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
+            if (max >= min)
+            {
+                Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
+                settings.MinRange = Convert.ToInt32(min);
+                settings.MaxRange = Convert.ToInt32(max) + 1;
+                await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
 
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Range updated successfully!"));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Range updated successfully!"));
+            } else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Max has to be bigger or equal to min!"));
+            }
+
         }
     }
 }
