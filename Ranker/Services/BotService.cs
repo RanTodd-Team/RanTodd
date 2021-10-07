@@ -54,10 +54,16 @@ namespace Ranker
                 await e.Context.DeleteResponseAsync();
 
                 bool botOwner = s.Client.CurrentApplication.Owners.Any(x => x.Id == e.Context.User.Id);
+                
+                DiscordEmbedBuilder embed = new DiscordEmbedBuilder()
+                    .WithTitle("Error")
+                    .WithColor(DiscordColor.Red)
+                    .WithDescription(botOwner ? $"```{e.Exception}```" : "Please contact the bot owner to get more information.");
 
                 await e.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, 
                     new DiscordInteractionResponseBuilder()
                         .WithContent("Something went wrong!")
+                        .AddEmbed(embed)
                         .AsEphemeral(true));
             };
 
