@@ -61,21 +61,48 @@ namespace Ranker
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("This member isn't ranked yet."));
         }
 
+        [ContextMenu(ApplicationCommandType.UserContextMenu, "Rank")]
+        public async Task RankContext(ContextMenuContext ctx) {
+            await ctx.CreateResponseAsync(
+                InteractionResponseType.DeferredChannelMessageWithSource,
+                new DiscordInteractionResponseBuilder().AsEphemeral(true));
+
+            Rank currentUserRank = await _database.Ranks.GetAsync(ctx.TargetMember.Id, ctx.Guild.Id);
+            Rank rank = await _database.Ranks.GetAsync(ctx.TargetMember.Id, ctx.Guild.Id);
+            if (rank.Xp > 0)
+            {
+                MemoryStream stream;
+                if (currentUserRank.Fleuron)
+                {
+                    stream = await Commands.RankFleuron(_database, ctx.Guild, ctx.TargetMember, rank);
+                }
+                else
+                {
+                    stream = await Commands.RankZeealeid(_database, ctx.Guild, ctx.TargetMember, rank);
+                }
+
+                DiscordWebhookBuilder builder = new DiscordWebhookBuilder();
+
+                builder.AddFile("rank.png", stream);
+
+                await ctx.EditResponseAsync(builder);
+            }
+            else await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("This member isn't ranked yet."));
+        }
+
         [SlashCommand("role", "Configures a level up role.")]
         [SlashRequireUserPermissions(Permissions.ManageGuild, false)]
         public async Task RoleCommand(InteractionContext ctx, [Option("level", "Level to configure")] long level, [Option("role", "Role to configure")] DiscordRole role = null)
         {
-            await ctx.CreateResponseAsync(
-                InteractionResponseType.DeferredChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral(true));
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
             if (role == null)
             {
                 await _database.Roles.RemoveAsync(ctx.Guild.Id, (ulong)level);
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role deconfigured!"));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role for level " + level.ToString() + " deconfigured!"));
             } else
             {
                 await _database.Roles.UpsertAsync(ctx.Guild.Id, (ulong)level, role.Id, role.Name);
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role configured!"));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role for level " + level.ToString() + " configured!"));
             }
             
         }
@@ -152,9 +179,7 @@ namespace Ranker
         [SlashRequireUserPermissions(Permissions.ManageGuild)]
         public async Task RangeCommand(InteractionContext ctx, [Option("min", "Minimum XP that can be win")] long min, [Option("max", "Maximum XP that can be win")] long max)
         {
-            await ctx.CreateResponseAsync(
-                InteractionResponseType.DeferredChannelMessageWithSource,
-                new DiscordInteractionResponseBuilder().AsEphemeral(true));
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
             Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
             settings.MinRange = Convert.ToInt32(min);
