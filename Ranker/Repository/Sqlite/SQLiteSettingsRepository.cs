@@ -40,7 +40,8 @@ namespace Ranker
                 {
                     Guild = ulong.Parse(Guild),
                     MinRange = int.Parse(MinRange),
-                    MaxRange = int.Parse(MaxRange)
+                    MaxRange = int.Parse(MaxRange),
+                    Banner = Banner
                 };
             }
         }
@@ -59,7 +60,8 @@ namespace Ranker
                 var rank = db.Table<SQLiteData>().ToList().Find(f => f.Guild == guildId.ToString())?.ToSettings() ?? new() {
                     Guild = guildId,
                     MinRange = 15,
-                    MaxRange = 26
+                    MaxRange = 26,
+                    Banner = null
                 };
                 return rank;
             });
