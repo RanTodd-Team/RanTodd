@@ -1,6 +1,6 @@
 # Get started (Running the bot)
 
-1. Add an environment variable named `RANKER_TOKEN` with a value of your bot token you received in **step 8, Set up a bot account**.
+1. Add an environment variable named `RANKER_TOKEN` with a value of your bot token you received in **step 8, Set up a bot account**, do the same with `RANKER_CLIENT_SECRET` but with your bot client secret.
    Please note that you may need to restart or log out for this change to take effect.
 2. Clone this repository.
 3. Rename `config.example.json` to `config.json`.
