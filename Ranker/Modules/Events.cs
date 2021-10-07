@@ -118,6 +118,11 @@ namespace Ranker
                 {
                     rank.Level += 1;
                     rank.Xp -= rank.NextXp;
+                    while(rank.Xp >= rank.NextXp)
+                    {
+                        rank.Level += 1;
+                        rank.Xp -= rank.NextXp;
+                    }
                     rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * rank.Level) + 100);
                     try
                     {
