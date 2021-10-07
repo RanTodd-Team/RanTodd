@@ -61,7 +61,7 @@ namespace Ranker
                     .WithDescription(botOwner ? $"```{e.Exception}```" : "Please contact the bot owner to get more information.");
 
                 await e.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, 
-                    new DiscordWebhookBuilder()
+                    new DiscordInteractionResponseBuilder()
                         .WithContent("Something went wrong!")
                         .AddEmbed(embed)
                         .AsEphemeral(true));
