@@ -50,6 +50,8 @@ namespace Ranker
             slashCommands.SlashCommandErrored += async (s, e) =>
             {
                 s.Client.Logger.LogError(e.Exception.ToString());
+                
+                await e.Context.DeleteResponseAsync();
 
                 bool botOwner = s.Client.CurrentApplication.Owners.Any(x => x.Id == e.Context.User.Id);
 
@@ -58,9 +60,11 @@ namespace Ranker
                     .WithColor(DiscordColor.Red)
                     .WithDescription(botOwner ? $"```{e.Exception}```" : "Please contact the bot owner to get more information.");
 
-                await e.Context.EditResponseAsync(new DiscordWebhookBuilder()
-                    .WithContent("Something went wrong!")
-                    .AddEmbed(embed));
+                await e.Context.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, 
+                    new DiscordWebhookBuilder()
+                        .WithContent("Something went wrong!")
+                        .AddEmbed(embed)
+                        .AsEphemeral(true));
             };
 
             slashCommands.RegisterCommands<SlashCommands>(configJson.GuildId);
