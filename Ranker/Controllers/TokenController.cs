@@ -33,7 +33,7 @@ namespace Ranker
                         { "client_secret", Environment.GetEnvironmentVariable("RANKER_CLIENT_SECRET") },
                         { "grant_type", "authorization_code" },
                         { "code", Request.Headers["Code"] },
-                        { "redirect_uri", "http://localhost:8000/callback" },
+                        { "redirect_uri", configJson.Domain + "/callback" },
                         { "scope", "identify guilds" }
                     };
 
