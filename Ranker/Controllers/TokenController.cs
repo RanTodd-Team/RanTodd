@@ -36,9 +36,11 @@ namespace Ranker
                         { "scope", "identify guilds" }
                     };
 
-                    var response = await client.PostAsync($"https://discord.com/api/v9/oauth2/token", new FormUrlEncodedContent(dictionary));
-                    string responseJson = await response.Content.ReadAsStringAsync();
-                    return Ok(responseJson);
+                    using (FormUrlEncodedContent requestContent = new FormUrlEncodedContent(dictionary)) {
+                        var response = await client.PostAsync($"https://discord.com/api/v9/oauth2/token", requestContent);
+                        string responseJson = await response.Content.ReadAsStringAsync();
+                        return Ok(responseJson);
+                    }
                 }
             }
             catch
