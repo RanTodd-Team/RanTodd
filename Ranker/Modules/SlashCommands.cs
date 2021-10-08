@@ -105,7 +105,6 @@ namespace Ranker
                 await _database.Roles.UpsertAsync(ctx.Guild.Id, (ulong)level, role.Id, role.Name);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role for level " + level.ToString() + " configured!"));
             }
-            
         }
 
         [SlashCommand("fleuron", "Enables or disables Flueron's style.")]
@@ -192,7 +191,6 @@ namespace Ranker
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Max has to be bigger or equal to min! (also, both have to be positive)"));
             }
-
         }
 
         [SlashCommand("exclude", "Excludes a channel.")]
@@ -201,7 +199,6 @@ namespace Ranker
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            
                 Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
             settings.ExcludedChannels.Add(channel.Id);
                 await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
@@ -214,7 +211,6 @@ namespace Ranker
         public async Task IncludeCommand(InteractionContext ctx, [Option("channel", "Channel to unexclude")] DiscordChannel channel)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-
 
             Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
             if (settings.ExcludedChannels.Remove(channel.Id))
