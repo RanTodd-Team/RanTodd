@@ -181,7 +181,7 @@ namespace Ranker
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            if (max >= min)
+            if ((max >= min) && (min > -1) && (max > -1))
             {
                 Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
                 settings.MinRange = Convert.ToInt32(min);
@@ -191,7 +191,7 @@ namespace Ranker
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Range updated successfully!"));
             } else
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Max has to be bigger or equal to min!"));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Max has to be bigger or equal to min! (also, both have to be positive)"));
             }
 
         }
