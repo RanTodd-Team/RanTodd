@@ -105,12 +105,16 @@ namespace Ranker
             rank.Avatar = e.Author.AvatarUrl;
             rank.Username = e.Author.Username;
             rank.Discriminator = e.Author.Discriminator;
-            rank.Messages += 1;
-            
+
+
+            Settings settings = await _database.Settings.GetAsync(e.Guild.Id);
+
+            if (!settings.ExcludedChannels.Contains(e.Channel.Id)) {
+
             if (e.Message.CreationTimestamp >= rank.LastCreditDate.AddMinutes(1))
             {
-                Settings settings = await _database.Settings.GetAsync(e.Guild.Id);
                 ulong newXp = Convert.ToUInt64(new Random().Next(settings.MinRange, settings.MaxRange));
+            rank.Messages += 1;
                 rank.Xp += newXp;
                 rank.TotalXp += newXp;
                 rank.LastCreditDate = e.Message.CreationTimestamp;
@@ -118,7 +122,7 @@ namespace Ranker
                 {
                     rank.Level += 1;
                     rank.Xp -= rank.NextXp;
-                    while(rank.Xp >= rank.NextXp)
+                    while (rank.Xp >= rank.NextXp)
                     {
                         rank.Level += 1;
                         rank.Xp -= rank.NextXp;
@@ -137,6 +141,7 @@ namespace Ranker
                     } catch { }
                 }
             }
+        }
 
             await _database.Ranks.UpsertAsync(e.Author.Id, e.Guild.Id, rank);
         }

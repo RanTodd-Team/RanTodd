@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace Ranker
                 MinRange = settings.MinRange.ToString();
                 MaxRange = settings.MaxRange.ToString();
                 Banner = settings.Banner;
+                ExcludedChannels = JsonConvert.SerializeObject(settings.ExcludedChannels);
             }
 
             [PrimaryKey]
@@ -34,6 +36,8 @@ namespace Ranker
 
             public string Banner { get; set; }
 
+            public string ExcludedChannels { get; set; }
+
             public Settings ToSettings()
             {
                 return new Settings()
@@ -41,7 +45,8 @@ namespace Ranker
                     Guild = ulong.Parse(Guild),
                     MinRange = int.Parse(MinRange),
                     MaxRange = int.Parse(MaxRange),
-                    Banner = Banner
+                    Banner = Banner,
+                    ExcludedChannels = JsonConvert.DeserializeObject<List<ulong>>(ExcludedChannels)
                 };
             }
         }
@@ -61,7 +66,8 @@ namespace Ranker
                     Guild = guildId,
                     MinRange = 15,
                     MaxRange = 26,
-                    Banner = null
+                    Banner = null,
+                    ExcludedChannels = new List<ulong>()
                 };
                 return rank;
             });

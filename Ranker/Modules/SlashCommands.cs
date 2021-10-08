@@ -202,5 +202,39 @@ namespace Ranker
             }
 
         }
+
+        [SlashCommand("exclude", "Excludes a channel.")]
+        [SlashRequireUserPermissions(Permissions.ManageGuild)]
+        public async Task ExcludeCommand(InteractionContext ctx, [Option("channel", "Channel to exclude")] DiscordChannel channel)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            
+                Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
+            settings.ExcludedChannels.Add(channel.Id);
+                await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Channel excluded successfully!"));
+        }
+
+        [SlashCommand("unexclude", "Unexcludes a channel.")]
+        [SlashRequireUserPermissions(Permissions.ManageGuild)]
+        public async Task IncludeCommand(InteractionContext ctx, [Option("channel", "Channel to unexclude")] DiscordChannel channel)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+
+            Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
+            if (settings.ExcludedChannels.Remove(channel.Id))
+            {
+                await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Channel unexcluded successfully!"));
+            } else
+            {
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("The channel is not excluded!"));
+            }
+        }
     }
 }
