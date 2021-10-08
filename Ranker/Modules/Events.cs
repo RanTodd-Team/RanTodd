@@ -161,7 +161,7 @@ namespace Ranker
                                 var response = await client.GetAsync("https://mee6.xyz/api/plugins/levels/leaderboard/" + e.Guild.Id.ToString() + "?page=" + times.ToString());
                                 string responseJson = await response.Content.ReadAsStringAsync();
                                 JObject jsonParsed = JObject.Parse(responseJson);
-                                Console.WriteLine("Migrated " + times + " pages.");
+                                Console.WriteLine("Migrated " + times + " pages in " + e.Guild.Name + ".");
                                 if(times == 0)
                                 {
                                     jsonParsed["role_rewards"].Value<JArray>().ToList().ForEach(role =>
