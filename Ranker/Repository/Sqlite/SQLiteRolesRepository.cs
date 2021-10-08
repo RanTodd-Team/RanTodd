@@ -35,7 +35,6 @@ namespace Ranker
 
             public string RoleName { get; set; }
 
-
             public Role ToRole()
             {
                 return new Role()

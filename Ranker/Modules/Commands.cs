@@ -20,7 +20,6 @@ namespace Ranker
 {
     public class Commands
     {
-
         // Designed by Zeealeid
         public async static Task<MemoryStream> RankZeealeid(IRankerRepository _database, DiscordGuild guild, DiscordUser user, Rank rank)
         {
@@ -140,7 +139,6 @@ namespace Ranker
             var metropolis = fonts.Install("./Fonts/Metropolis/Metropolis-Regular.ttf");
             var metropolisBold = fonts.Install("./Fonts/Metropolis/Metropolis-Bold.ttf");
             var epilogue = fonts.Install("./Fonts/Epilogue/static/Epilogue-Regular.ttf");
-
 
             var font1 = new Font(metropolis, 54f);
 

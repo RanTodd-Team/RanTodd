@@ -80,7 +80,6 @@ namespace Ranker
                         { "roles", roles.OrderBy(x => x.Level) },
                         { "players", ranks }
                     });
-
                     }
                 }
             }

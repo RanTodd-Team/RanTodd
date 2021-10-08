@@ -14,7 +14,6 @@ namespace Ranker
     [Route("[controller]")]
     public class CommonsController : Controller
     {
-
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -52,7 +51,6 @@ namespace Ranker
 
                         return Ok(JsonConvert.SerializeObject(ready));
                     }
-
                 }
             }
             catch

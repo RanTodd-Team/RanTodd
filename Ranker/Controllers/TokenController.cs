@@ -13,7 +13,6 @@ namespace Ranker
     [Route("[controller]")]
     public class TokenController : Controller
     {
-
         ConfigJson configJson;
 
         public TokenController(ConfigJson config)
