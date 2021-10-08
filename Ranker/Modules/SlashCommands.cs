@@ -18,14 +18,6 @@ using Newtonsoft.Json;
 
 namespace Ranker
 {
-    public class RequireOwnerOrManageGuild : SlashCheckBaseAttribute
-    {
-        public override async Task<bool> ExecuteChecksAsync(InteractionContext ctx)
-        {
-            return (await ctx.Guild.GetMemberAsync(ctx.User.Id)).Permissions.HasPermission(Permissions.ManageGuild) || ctx.Client.CurrentApplication.Owners.ToList().Contains(ctx.User);
-        }
-    }
-
     [SlashRequireGuild]
     public class SlashCommands : ApplicationCommandModule
     {
@@ -232,7 +224,6 @@ namespace Ranker
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Channel unexcluded successfully!"));
             } else
             {
-
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("The channel is not excluded!"));
             }
         }
