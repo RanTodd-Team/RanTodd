@@ -2,6 +2,7 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 ![CodeQL workflow status](https://github.com/Ranker-Team/Ranker/actions/workflows/codeql-analysis.yml/badge.svg)
 [![CodeFactor](https://www.codefactor.io/repository/github/ranker-team/ranker/badge)](https://www.codefactor.io/repository/github/ranker-team/ranker)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Ranker-Team/Ranker.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Ranker-Team/Ranker/alerts/)
 
 Ranker is a Discord ranking bot originally designed for Microsoft Community. It offers from a simple rank card to a complex leaderboard.
 
