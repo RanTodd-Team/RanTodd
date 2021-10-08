@@ -35,7 +35,7 @@
 2. Scroll down until you see your **Application ID**.
 
    <img src="../images/get-started/fig7.png" width="400">
-3. Paste `https://discord.com/api/oauth2/authorize?client_id=[CLIENT ID]&permissions=378225675264&scope=bot%20applications.commands`, replacing `[CLIENT ID]` with the Application ID you got from the previous step.
+3. Paste `https://discord.com/api/oauth2/authorize?client_id=[CLIENT ID]&permissions=395405551616&scope=bot%20applications.commands`, replacing `[CLIENT ID]` with the Application ID you got from the previous step.
 4. Select the server you want to invite the bot to and select **Continue**.
 
    <img src="../images/get-started/fig8.png" width="400">
