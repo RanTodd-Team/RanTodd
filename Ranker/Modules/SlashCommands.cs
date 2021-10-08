@@ -68,7 +68,7 @@ namespace Ranker
                 InteractionResponseType.DeferredChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AsEphemeral(true));
 
-            Rank currentUserRank = await _database.Ranks.GetAsync(ctx.TargetMember.Id, ctx.Guild.Id);
+            Rank currentUserRank = await _database.Ranks.GetAsync(ctx.Member.Id, ctx.Guild.Id);
             Rank rank = await _database.Ranks.GetAsync(ctx.TargetMember.Id, ctx.Guild.Id);
             if (rank.Xp > 0)
             {
