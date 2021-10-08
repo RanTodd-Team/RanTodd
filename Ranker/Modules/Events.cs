@@ -160,42 +160,49 @@ namespace Ranker
                             {
                                 var response = await client.GetAsync("https://mee6.xyz/api/plugins/levels/leaderboard/" + e.Guild.Id.ToString() + "?page=" + times.ToString());
                                 string responseJson = await response.Content.ReadAsStringAsync();
-                                JObject jsonParsed = JObject.Parse(responseJson);
-                                Console.WriteLine("Migrated " + times + " pages in " + e.Guild.Name + ".");
-                                if(times == 0)
+                                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                                 {
-                                    jsonParsed["role_rewards"].Value<JArray>().ToList().ForEach(role =>
+                                    JObject jsonParsed = JObject.Parse(responseJson);
+                                    if (times == 0)
                                     {
-                                        _database.Roles.UpsertAsync(e.Guild.Id, role["rank"].Value<ulong>(), ulong.Parse(role["role"]["id"].Value<string>()), role["role"]["name"].Value<string>());
-                                    });
-                                }
-                                if (jsonParsed["players"].Value<JArray>().Count != 0)
-                                {
-                                    jsonParsed["players"].Value<JArray>().ToList().ForEach(player =>
-                                    {
-                                        string userId = player["id"].Value<string>();
-                                        string avatarHash = player["avatar"].Value<string>();
-                                        Rank rank = new Rank()
+                                        jsonParsed["role_rewards"].Value<JArray>().ToList().ForEach(role =>
                                         {
-                                            LastCreditDate = DateTimeOffset.MinValue, // We just empty it
+                                            _database.Roles.UpsertAsync(e.Guild.Id, role["rank"].Value<ulong>(), ulong.Parse(role["role"]["id"].Value<string>()), role["role"]["name"].Value<string>());
+                                        });
+                                    }
+                                    if (jsonParsed["players"].Value<JArray>().Count != 0)
+                                    {
+                                        Console.WriteLine(jsonParsed["players"].Value<JArray>().Count);
+                                        jsonParsed["players"].Value<JArray>().ToList().ForEach(player =>
+                                        {
+                                            string userId = player["id"].Value<string>();
+                                            string avatarHash = player["avatar"].Value<string>();
+                                            Rank rank = new Rank()
+                                            {
+                                                LastCreditDate = DateTimeOffset.MinValue, // We just empty it
                                             Messages = player["message_count"].Value<ulong>(),
-                                            Xp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>(),
-                                            NextXp = player["detailed_xp"].Value<JArray>()[1].Value<ulong>(),
-                                            Level = player["level"].Value<ulong>(),
-                                            TotalXp = player["xp"].Value<ulong>(),
-                                            Guild = e.Guild.Id,
-                                            User = ulong.Parse(userId),
-                                            Username = player["username"].Value<string>(),
-                                            Discriminator = player["discriminator"].Value<string>(),
-                                            Avatar = avatarHash != "" ? "https://cdn.discordapp.com/avatars/" + userId + "/" + avatarHash + ".png?size=1024" : "https://cdn.discordapp.com/embed/avatars/1.png",
-                                            Fleuron = false
-                                        };
-                                        _database.Ranks.UpsertAsync(ulong.Parse(userId), e.Guild.Id, rank);
-                                    });
-                                    times++;
-                                }
-                                else
-                                {
+                                                Xp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>(),
+                                                NextXp = player["detailed_xp"].Value<JArray>()[1].Value<ulong>(),
+                                                Level = player["level"].Value<ulong>(),
+                                                TotalXp = player["xp"].Value<ulong>(),
+                                                Guild = e.Guild.Id,
+                                                User = ulong.Parse(userId),
+                                                Username = player["username"].Value<string>(),
+                                                Discriminator = player["discriminator"].Value<string>(),
+                                                Avatar = avatarHash != "" ? "https://cdn.discordapp.com/avatars/" + userId + "/" + avatarHash + ".png?size=1024" : "https://cdn.discordapp.com/embed/avatars/1.png",
+                                                Fleuron = false
+                                            };
+                                            _database.Ranks.UpsertAsync(ulong.Parse(userId), e.Guild.Id, rank);
+                                        });
+
+                                        Console.WriteLine("Migrated page number " + times + " in " + e.Guild.Name + ".");
+                                        times++;
+                                    }
+                                    else
+                                    {
+                                        hasPlayers = false;
+                                    }
+                                } else {
                                     hasPlayers = false;
                                 }
                             }
