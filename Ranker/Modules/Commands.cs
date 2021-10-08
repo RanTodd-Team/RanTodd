@@ -197,7 +197,6 @@ namespace Ranker
 
                     image.Mutate(x => x.DrawText(maxXp.ToString(), font4, Color.White, new Point(934 - (int)measure5.Width - 18, 190)));
 
-
                     using (WebClient webClient = new WebClient())
                     {
                         var propic = Image.Load(webClient.DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
