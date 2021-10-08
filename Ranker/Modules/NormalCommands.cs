@@ -18,6 +18,7 @@ using DSharpPlus.CommandsNext.Attributes;
 
 namespace Ranker
 {
+    [RequireGuild]
     public class NormalCommands : BaseCommandModule
     {
         private readonly IRankerRepository _database;
