@@ -18,6 +18,14 @@ using Newtonsoft.Json;
 
 namespace Ranker
 {
+    public class RequireOwnerOrManageGuild : SlashCheckBaseAttribute
+    {
+        public override async Task<bool> ExecuteChecksAsync(InteractionContext ctx)
+        {
+            return (await ctx.Guild.GetMemberAsync(ctx.User.Id)).Permissions.HasPermission(Permissions.ManageGuild) || ctx.Client.CurrentApplication.Owners.ToList().Contains(ctx.User);
+        }
+    }
+
     [SlashRequireGuild]
     public class SlashCommands : ApplicationCommandModule
     {
@@ -156,7 +164,7 @@ namespace Ranker
         }
 
         [SlashCommand("migrate", "Migrates MEE6's data.")]
-        [SlashRequireUserPermissions(Permissions.ManageGuild, false)]
+        [RequireOwnerOrManageGuild]
         public async Task MigrateCommand(InteractionContext ctx)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);

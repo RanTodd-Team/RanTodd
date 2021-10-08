@@ -143,7 +143,7 @@ namespace Ranker
 
         private async Task Client_ComponentInteractionCreated(DiscordClient sender, DSharpPlus.EventArgs.ComponentInteractionCreateEventArgs e)
         {
-            if (e.User.Id == e.Guild.OwnerId) {
+            if (sender.CurrentApplication.Owners.ToList().Contains(e.User) || (await e.Guild.GetMemberAsync(e.User.Id)).Permissions.HasPermission(Permissions.ManageGuild)) {
                 if (e.Id == "continue")
                 {
                     await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. Even if it may appear to be stuck, we're still working. We will notify you when we're done. You can check console for the logged pages if you're self-hosting."));
