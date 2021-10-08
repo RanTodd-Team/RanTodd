@@ -96,7 +96,7 @@ namespace Ranker
         {
             return Task.Run(() =>
             {
-                Rank rank = new();
+                Rank rank;
                 var list = db.Table<SQLiteData>().ToList();
                 rank = list.Find(f => f.Id == $"{guildId}/{userId}")?.ToRank() ?? new()
                 {

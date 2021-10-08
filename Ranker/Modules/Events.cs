@@ -127,7 +127,7 @@ namespace Ranker
                         rank.Level += 1;
                         rank.Xp -= rank.NextXp;
                     }
-                    rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * rank.Level) + 100);
+                    rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * (float)rank.Level) + 100);
                     try
                     {
                         List<Role> roles = await _database.Roles.GetAsync(e.Guild.Id);

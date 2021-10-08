@@ -33,21 +33,23 @@ namespace Ranker.Controllers
                     if (rulesChannel == null)
                         throw new Exception("No rules channel to create invites for.");
 
-                    StringContent requestContent = new("{ \"max_uses\": 1, \"unique\": true }", Encoding.UTF8, "application/json");
-                    response = await client.PostAsync($"https://discord.com/api/v9/channels/{rulesChannel}/invites", requestContent);
-                    if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    using (StringContent requestContent = new("{ \"max_uses\": 1, \"unique\": true }", Encoding.UTF8, "application/json"))
                     {
-                        // We aren't authorized to create an invite.
-                        return Unauthorized();
-                    }
+                        response = await client.PostAsync($"https://discord.com/api/v9/channels/{rulesChannel}/invites", requestContent);
+                        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                        {
+                            // We aren't authorized to create an invite.
+                            return Unauthorized();
+                        }
 
-                    responseJson = await response.Content.ReadAsStringAsync();
+                        responseJson = await response.Content.ReadAsStringAsync();
 
-                    var code = JToken.Parse(responseJson)["code"].Value<string>();
-                    return Ok(new Dictionary<string, string>()
+                        var code = JToken.Parse(responseJson)["code"].Value<string>();
+                        return Ok(new Dictionary<string, string>()
                     {
                         { "url", $"https://discord.gg/{code}" }
                     });
+                    }
                 }
             }
             catch
