@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 
 namespace Ranker
 {
+    [SlashRequireGuild]
     public class SlashCommands : ApplicationCommandModule
     {
         private readonly IRankerRepository _database;
@@ -155,24 +156,22 @@ namespace Ranker
         }
 
         [SlashCommand("migrate", "Migrates MEE6's data.")]
+        [SlashRequireUserPermissions(Permissions.ManageGuild, false)]
         public async Task MigrateCommand(InteractionContext ctx)
         {
-            if (ctx.Member.IsOwner)
-            {
-                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-                var continueButton = new DiscordButtonComponent(ButtonStyle.Success, "continue", "Start migration");
+            var continueButton = new DiscordButtonComponent(ButtonStyle.Success, "continue", "Start migration");
 
-                var cancelButton = new DiscordButtonComponent(ButtonStyle.Danger, "cancel", "Cancel");
+            var cancelButton = new DiscordButtonComponent(ButtonStyle.Danger, "cancel", "Cancel");
 
-                DiscordWebhookBuilder webhook = new DiscordWebhookBuilder();
+            DiscordWebhookBuilder webhook = new DiscordWebhookBuilder();
 
-                webhook.WithContent("Running this command will DELETE all ranking and roles data and REPLACE it with the one this server had with MEE6. Do you want to CONTINUE?");
+            webhook.WithContent("Running this command will DELETE all ranking and roles data and REPLACE it with the one this server had with MEE6. Do you want to CONTINUE?");
 
-                webhook.AddComponents(continueButton, cancelButton);
+            webhook.AddComponents(continueButton, cancelButton);
 
-                await ctx.EditResponseAsync(webhook);
-            }
+            await ctx.EditResponseAsync(webhook);
         }
 
         [SlashCommand("range", "Changes range of XP winned.")]
