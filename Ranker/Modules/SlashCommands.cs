@@ -154,23 +154,45 @@ namespace Ranker
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("https://www.youtube.com/watch?v=CBpSGsT7L6s"));
         }
 
-        [SlashCommand("migrate", "Migrates MEE6's data.")]
-        [RequireOwnerOrManageGuild]
-        public async Task MigrateCommand(InteractionContext ctx)
+        [SlashCommandGroup("migrate", "Migrates data.")]
+        [RequireBotOwnerOrAdmin]
+        public class MigrateGroup : ApplicationCommandModule
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            [SlashCommand("mee6", "Migrates MEE6's data")]
+            public async Task MEE6Command(InteractionContext ctx)
+            {
+                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            var continueButton = new DiscordButtonComponent(ButtonStyle.Success, "continue", "Start migration");
+                var continueButton = new DiscordButtonComponent(ButtonStyle.Success, "continueMEE&", "Start migration");
 
-            var cancelButton = new DiscordButtonComponent(ButtonStyle.Danger, "cancel", "Cancel");
+                var cancelButton = new DiscordButtonComponent(ButtonStyle.Danger, "cancelMEE6", "Cancel");
 
-            DiscordWebhookBuilder webhook = new DiscordWebhookBuilder();
+                DiscordWebhookBuilder webhook = new DiscordWebhookBuilder();
 
-            webhook.WithContent("Running this command will DELETE all ranking and roles data and REPLACE it with the one this server had with MEE6. Do you want to CONTINUE?");
+                webhook.WithContent("Running this command will DELETE all ranking and roles data and REPLACE it with the one this server had with MEE6. Do you want to CONTINUE?");
 
-            webhook.AddComponents(continueButton, cancelButton);
+                webhook.AddComponents(continueButton, cancelButton);
 
-            await ctx.EditResponseAsync(webhook);
+                await ctx.EditResponseAsync(webhook);
+            }
+
+            [SlashCommand("user", "Migrates an user's data")]
+            public async Task UserCommand(InteractionContext ctx, [Option("old_user", "User to get the data")] DiscordUser oldUser, [Option("new_user", "User where the data is being transferred")] DiscordUser newUser)
+            {
+                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                var continueButton = new DiscordButtonComponent(ButtonStyle.Success, "continueUser-" + oldUser.Id + "-" + newUser.Id, "Start migration");
+
+                var cancelButton = new DiscordButtonComponent(ButtonStyle.Danger, "cancelUser", "Cancel");
+
+                DiscordWebhookBuilder webhook = new DiscordWebhookBuilder();
+
+                webhook.WithContent("Running this command will DELETE all ranking data from both the source and target user and REPLACE it. Do you want to CONTINUE?");
+
+                webhook.AddComponents(continueButton, cancelButton);
+
+                await ctx.EditResponseAsync(webhook);
+            }
         }
 
         [SlashCommand("range", "Changes range of XP winned.")]

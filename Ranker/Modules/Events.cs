@@ -149,7 +149,7 @@ namespace Ranker
         private async Task Client_ComponentInteractionCreated(DiscordClient sender, DSharpPlus.EventArgs.ComponentInteractionCreateEventArgs e)
         {
             if (sender.CurrentApplication.Owners.ToList().Contains(e.User) || (await e.Guild.GetMemberAsync(e.User.Id)).Permissions.HasPermission(Permissions.ManageGuild)) {
-                if (e.Id == "continue")
+                if (e.Id == "continueMEE6")
                 {
                     await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. Even if it may appear to be stuck, we're still working. We will notify you when we're done. You can check console for the logged pages if you're self-hosting."));
 
@@ -218,7 +218,27 @@ namespace Ranker
                     await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
                 } else
                 {
-                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Migration cancelled."));
+                    if (e.Id.StartsWith("continueUser")) {
+                        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. This shouldn't take long."));
+                        ulong oldUser = ulong.Parse(e.Id.Split("-")[1]);
+                        ulong newUser = ulong.Parse(e.Id.Split("-")[2]);
+                        Rank oldRank = await _database.Ranks.GetAsync(oldUser, e.Guild.Id);
+                        Rank newRank = await _database.Ranks.GetAsync(newUser, e.Guild.Id);
+                        oldRank.User = newUser;
+                        oldRank.Username = newRank.Username;
+                        oldRank.Discriminator = newRank.Discriminator;
+                        oldRank.Avatar = newRank.Avatar;
+                        await _database.Ranks.UpsertAsync(oldUser, e.Guild.Id, new Rank() {
+                            Guild = e.Guild.Id,
+                            User = oldUser
+                        });
+                        await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, oldRank);
+                        await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
+                    }
+                    else
+                    {
+                        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Migration cancelled."));
+                    }
                 }
             }
         }
