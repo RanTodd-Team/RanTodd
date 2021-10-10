@@ -195,6 +195,25 @@ namespace Ranker
             }
         }
 
+        [SlashCommand("merge", "Merges two users' data")]
+        [RequireBotOwnerOrAdmin]
+        public async Task UserCommand(InteractionContext ctx, [Option("old_user", "User to get the data")] DiscordUser oldUser, [Option("new_user", "User where the data is being transferred")] DiscordUser newUser)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+            var continueButton = new DiscordButtonComponent(ButtonStyle.Success, "continueMerge-" + oldUser.Id + "-" + newUser.Id, "Start merging");
+
+            var cancelButton = new DiscordButtonComponent(ButtonStyle.Danger, "cancelMerge", "Cancel");
+
+            DiscordWebhookBuilder webhook = new DiscordWebhookBuilder();
+
+            webhook.WithContent("Running this command will DELETE all ranking data from the source and the target user data will me MERGED. Do you want to CONTINUE?");
+
+            webhook.AddComponents(continueButton, cancelButton);
+
+            await ctx.EditResponseAsync(webhook);
+        }
+
         [SlashCommand("range", "Changes range of XP winned.")]
         [SlashRequireUserPermissions(Permissions.ManageGuild)]
         public async Task RangeCommand(InteractionContext ctx, [Option("min", "Minimum XP that can be win")] long min, [Option("max", "Maximum XP that can be win")] long max)

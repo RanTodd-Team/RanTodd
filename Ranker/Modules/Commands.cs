@@ -15,6 +15,7 @@ using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using DSharpPlus;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Ranker
 {
@@ -23,8 +24,9 @@ namespace Ranker
         // Designed by Zeealeid
         public async static Task<MemoryStream> RankZeealeid(IRankerRepository _database, DiscordGuild guild, DiscordUser user, Rank rank)
         {
-            string preUsername = String.Join("", (rank.Username ?? user.Username).Take(13).ToArray());
-            string username = preUsername + (preUsername != (rank.Username ?? user.Username) ? "..." : "");
+            string prePreUsername = Regex.Replace((rank.Username ?? user.Username), @"[^\u0000-\u007F]+", "?");
+            string preUsername = String.Join("", prePreUsername.Take(13).ToArray());
+            string username = preUsername + (preUsername != prePreUsername ? "..." : "");
             string discriminator = rank.Discriminator ?? user.Discriminator;
             string pfpUrl = rank.Avatar ?? user.AvatarUrl;
             ulong level = rank.Level;
@@ -111,8 +113,9 @@ namespace Ranker
         // Designed by Fleuron
         public async static Task<MemoryStream> RankFleuron(IRankerRepository _database, DiscordGuild guild, DiscordUser user, Rank rank)
         {
-            string preUsername = String.Join("", (rank.Username ?? user.Username).Take(13).ToArray());
-            string username = preUsername + (preUsername != (rank.Username ?? user.Username) ? "..." : "");
+            string prePreUsername = Regex.Replace((rank.Username ?? user.Username), @"[^\u0000-\u007F]+", "?");
+            string preUsername = String.Join("", prePreUsername.Take(13).ToArray());
+            string username = preUsername + (preUsername != prePreUsername ? "..." : "");
             string discriminator = rank.Discriminator ?? user.Discriminator;
             string pfpUrl = rank.Avatar ?? user.AvatarUrl;
             ulong level = rank.Level;

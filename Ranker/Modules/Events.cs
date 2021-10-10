@@ -218,7 +218,8 @@ namespace Ranker
                     await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
                 } else
                 {
-                    if (e.Id.StartsWith("continueUser")) {
+                    if (e.Id.StartsWith("continueUser"))
+                    {
                         await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. This shouldn't take long."));
                         ulong oldUser = ulong.Parse(e.Id.Split("-")[1]);
                         ulong newUser = ulong.Parse(e.Id.Split("-")[2]);
@@ -228,16 +229,53 @@ namespace Ranker
                         oldRank.Username = newRank.Username;
                         oldRank.Discriminator = newRank.Discriminator;
                         oldRank.Avatar = newRank.Avatar;
-                        await _database.Ranks.UpsertAsync(oldUser, e.Guild.Id, new Rank() {
+                        await _database.Ranks.UpsertAsync(oldUser, e.Guild.Id, new Rank()
+                        {
                             Guild = e.Guild.Id,
                             User = oldUser
                         });
                         await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, oldRank);
                         await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
                     }
+                    else if (e.Id.StartsWith("continueMerge"))
+                    {
+                        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we merge the data. This shouldn't take long."));
+                        ulong oldUser = ulong.Parse(e.Id.Split("-")[1]);
+                        ulong newUser = ulong.Parse(e.Id.Split("-")[2]);
+                        Rank oldRank = await _database.Ranks.GetAsync(oldUser, e.Guild.Id);
+                        Rank newRank = await _database.Ranks.GetAsync(newUser, e.Guild.Id);
+                        newRank.TotalXp += oldRank.TotalXp;
+                        ulong totalXp = newRank.TotalXp;
+                        ulong level = 0;
+                        ulong min = 0;
+                        while(totalXp > min)
+                        {
+                            Console.WriteLine("tx: " + totalXp.ToString() + " - min: " + min.ToString());
+                            min = Convert.ToUInt64(5 * Math.Pow(level, 2) + (50 * (float)level) + 100);
+                            if (min <= totalXp)
+                            {
+                                level++;
+                                totalXp -= min;
+                            }
+                        }
+                        level++;
+                        newRank.Xp = totalXp;
+                        newRank.Level = level;
+                        await _database.Ranks.UpsertAsync(oldUser, e.Guild.Id, new Rank()
+                        {
+                            Guild = e.Guild.Id,
+                            User = oldUser
+                        });
+                        await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, newRank);
+                        await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished merging the data!"));
+
+                    }
                     else
                     {
-                        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Migration cancelled."));
+
+                    }
+                    {
+                        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Migration/merge cancelled."));
                     }
                 }
             }
