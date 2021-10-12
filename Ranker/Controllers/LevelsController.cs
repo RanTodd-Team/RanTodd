@@ -47,7 +47,7 @@ namespace Ranker
                     {
                         bool managesGuild = false;
 
-                        if (Request.Headers["Code"] != "null")
+                        if (!String.IsNullOrEmpty(Request.Headers["Code"]))
                         {
                             client2.DefaultRequestHeaders.Authorization =
                                 new AuthenticationHeaderValue(
