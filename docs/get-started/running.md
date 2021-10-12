@@ -1,6 +1,6 @@
 # Get started (Running the bot)
 
-You can choose to either host the bot in Docker, or as a standalone program.
+You can choose to either host the bot in [Docker](#docker), or as a [standalone program](#standalone).
 
 ## Docker
 This method assumes you've already installed Docker Compose. If you haven't, visit [this link](https://docs.docker.com/compose/install/#install-compose) to find out how.
@@ -13,7 +13,7 @@ This method assumes you've already installed Docker Compose. If you haven't, vis
    
    **Note:** Should you wish to rebuild the bot, add `--build` to the previous command.
 
-## Standalon
+## Standalone
 You'll need .NET 5 SDK for this method. You can download the latest version [here](https://dotnet.microsoft.com/download/dotnet/5.0).
 
 1. Add an environment variable named `RANKER_TOKEN` with a value of your bot token you received in **step 8, Set up a bot account**, do the same with `RANKER_CLIENT_SECRET` but with your bot client secret.
