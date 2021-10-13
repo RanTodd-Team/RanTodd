@@ -1,8 +1,8 @@
 version: 2
 registries:
-  dspnightly:
-    type: nuget-feed
-    url: https://nuget.emzi0767.com/api/v3/index.json
+  # dspnightly:
+  #   type: nuget-feed
+  #   url: https://nuget.emzi0767.com/api/v3/index.json
   public:
     type: nuget-feed
     url: https://api.nuget.org/v3/index.json
