@@ -7,6 +7,9 @@ services:
     restart: on-failure
     volumes:
       - type: bind
+        source: ./data
+        target: /root/.ranker
+      - type: bind
         source: ./Ranker/config.json
         target: /app/config.json
     ports:
