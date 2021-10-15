@@ -10,7 +10,8 @@ COPY Ranker ./
 RUN dotnet build -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.11-alpine3.13
+FROM mcr.microsoft.com/dotnet/aspnet:5.0.11
 WORKDIR /app
+COPY Ranker/Fonts .
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "Ranker.dll"]

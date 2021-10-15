@@ -407,5 +407,7 @@ ASALocalRun/
 # Config file
 config.json
 
-# Docker environment file
+# Docker data
 .env
+data/*
+!data/.gitkeep
