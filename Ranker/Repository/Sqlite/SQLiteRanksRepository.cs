@@ -137,17 +137,20 @@ namespace Ranker
                     {
                         List<Role> roles = await _database.Roles.GetAsync(guild.Id);
                         var filteredRoles = roles.Where(x => x.Level <= newRank.Level).OrderByDescending(x => x.Level);
-                        if (filteredRoles.Count != 0)
+                        if (filteredRoles.Count() != 0)
                         {
-                            var selectedRole = filteredRoles[0];
+                            var selectedRole = filteredRoles.ElementAt(0);
                             ulong roleId = selectedRole.RoleId;
                             DiscordMember member = await guild.GetMemberAsync(userId);
                             if (!member.Roles.Any(f => f.Id == roleId))
                             {
                                 DiscordRole newRole = guild.GetRole(roleId);
-                                DiscordRole oldRole = guild.GetRole(roles[currentRoleIndex - 1]?.RoleId ?? 0);
                                 await member.GrantRoleAsync(newRole);
-                                await member.RevokeRoleAsync(oldRole);
+                                if (filteredRoles.Count() > 1)
+                                {
+                                    DiscordRole oldRole = guild.GetRole(filteredRoles.ElementAt(1));
+                                    await member.RevokeRoleAsync(oldRole);
+                                }
                             }
                         }
                     }
