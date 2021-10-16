@@ -126,7 +126,7 @@ namespace Ranker
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Flueron's style disabled!"));
             }
 
-            await _database.Ranks.UpsertAsync(ctx.Member.Id, ctx.Guild.Id, rank);
+            await _database.Ranks.UpsertAsync(ctx.Member.Id, ctx.Guild.Id, rank, ctx.Guild);
         }
 
         [SlashCommand("levels", "Send leaderboard.")]

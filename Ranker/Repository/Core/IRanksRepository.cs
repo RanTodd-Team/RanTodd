@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
 
 namespace Ranker
 {
@@ -20,8 +21,11 @@ namespace Ranker
         /// <summary>
         /// Modify an existing rank or add a new rank.
         /// </summary>
+        /// <param name="userId">The member ID.</param>
+        /// <param name="guildId">The guild ID.</param>
         /// <param name="newRank">The new rank.</param>
-        Task UpsertAsync(ulong userId, ulong guildId, Rank newRank);
+        /// <param name="newRank">The guild (optional but recommended).</param>
+        Task UpsertAsync(ulong userId, ulong guildId, Rank newRank, DiscordGuild? guild);
 
         /// <summary>
         /// Empties ranks.

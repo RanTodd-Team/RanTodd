@@ -60,7 +60,7 @@ namespace Ranker
             rank.Avatar = e.Member.GuildAvatarUrl;
             rank.Discriminator = e.Member.Discriminator;
             rank.Username = e.Member.Username;
-            await _database.Ranks.UpsertAsync(e.Member.Id, e.Guild.Id, rank);
+            await _database.Ranks.UpsertAsync(e.Member.Id, e.Guild.Id, rank, e.Guild);
         }
 
         private async Task Client_GuildMemberAdded(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberAddEventArgs e)
@@ -74,7 +74,7 @@ namespace Ranker
                 Discriminator = e.Member.Discriminator,
                 LastCreditDate = DateTimeOffset.UnixEpoch
             };
-            await _database.Ranks.UpsertAsync(e.Member.Id, e.Guild.Id, rank);
+            await _database.Ranks.UpsertAsync(e.Member.Id, e.Guild.Id, rank, e.Guild);
         }
 
         private async Task Client_Guild​Role​Update​d(DiscordClient sender, DSharpPlus.EventArgs.Guild​Role​Update​Event​Args e)
@@ -118,32 +118,10 @@ namespace Ranker
                 rank.Xp += newXp;
                 rank.TotalXp += newXp;
                 rank.LastCreditDate = e.Message.CreationTimestamp;
-                if (rank.Xp >= rank.NextXp)
-                {
-                    rank.Level += 1;
-                    rank.Xp -= rank.NextXp;
-                    while (rank.Xp >= rank.NextXp)
-                    {
-                        rank.Level += 1;
-                        rank.Xp -= rank.NextXp;
-                    }
-                    rank.NextXp = Convert.ToUInt64(5 * Math.Pow(rank.Level, 2) + (50 * (float)rank.Level) + 100);
-                    try
-                    {
-                        List<Role> roles = await _database.Roles.GetAsync(e.Guild.Id);
-                        int currentRoleIndex = roles.FindIndex(x => x.Level == rank.Level);
-                        ulong roleId = roles[currentRoleIndex]?.RoleId ?? 0;
-                        DiscordMember member = await e.Guild.GetMemberAsync(e.Author.Id);
-                        DiscordRole newRole = e.Guild.GetRole(roleId);
-                        DiscordRole oldRole = e.Guild.GetRole(roles[currentRoleIndex - 1]?.RoleId ?? 0);
-                        await member.GrantRoleAsync(newRole);
-                        await member.RevokeRoleAsync(oldRole);
-                    } catch { }
-                }
             }
         }
 
-            await _database.Ranks.UpsertAsync(e.Author.Id, e.Guild.Id, rank);
+            await _database.Ranks.UpsertAsync(e.Author.Id, e.Guild.Id, rank, e.Guild);
         }
 
         private async Task Client_ComponentInteractionCreated(DiscordClient sender, DSharpPlus.EventArgs.ComponentInteractionCreateEventArgs e)
@@ -197,7 +175,7 @@ namespace Ranker
                                                 Avatar = avatarHash != "" ? "https://cdn.discordapp.com/avatars/" + userId + "/" + avatarHash + ".png?size=1024" : "https://cdn.discordapp.com/embed/avatars/1.png",
                                                 Fleuron = false
                                             };
-                                            _database.Ranks.UpsertAsync(ulong.Parse(userId), e.Guild.Id, rank);
+                                            _database.Ranks.UpsertAsync(ulong.Parse(userId), e.Guild.Id, rank, e.Guild);
                                         });
 
                                         Console.WriteLine("Migrated page number " + times + " in " + e.Guild.Name + ".");
@@ -233,8 +211,8 @@ namespace Ranker
                         {
                             Guild = e.Guild.Id,
                             User = oldUser
-                        });
-                        await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, oldRank);
+                        }, e.Guild);
+                        await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, oldRank, e.Guild);
                         await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
                     }
                     else if (e.Id.StartsWith("continueMerge"))
@@ -265,8 +243,8 @@ namespace Ranker
                         {
                             Guild = e.Guild.Id,
                             User = oldUser
-                        });
-                        await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, newRank);
+                        }, e.Guild);
+                        await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, newRank, e.Guild);
                         await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished merging the data!"));
 
                     }

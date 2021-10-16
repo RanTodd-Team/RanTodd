@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using DSharpPlus.Entities;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,13 @@ namespace Ranker
 {
     public class SQLiteRanksRepository : IRanksRepository
     {
+        private readonly IRankerRepository _database;
+
+        public SQLiteRanksRepository(IRankerRepository database)
+        {
+            _database = database;
+        }
+
         private SQLiteConnection db;
 
         #region Data
@@ -107,10 +115,38 @@ namespace Ranker
             });
         }
 
-        public Task UpsertAsync(ulong userId, ulong guildId, Rank newRank)
+        public Task UpsertAsync(ulong userId, ulong guildId, Rank newRank, DiscordGuild? guild)
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
+
+                if (guild != null)
+                {
+                    if (newRank.Xp >= newRank.NextXp)
+                    {
+                        newRank.Level += 1;
+                        newRank.Xp -= newRank.NextXp;
+                        while (newRank.Xp >= newRank.NextXp)
+                        {
+                            newRank.Level += 1;
+                            newRank.Xp -= newRank.NextXp;
+                        }
+                        newRank.NextXp = Convert.ToUInt64(5 * Math.Pow(newRank.Level, 2) + (50 * (float)newRank.Level) + 100);
+                        try
+                        {
+                            List<Role> roles = await _database.Roles.GetAsync(guild.Id);
+                            int currentRoleIndex = roles.FindIndex(x => x.Level == newRank.Level);
+                            ulong roleId = roles[currentRoleIndex]?.RoleId ?? 0;
+                            DiscordMember member = await guild.GetMemberAsync(userId);
+                            DiscordRole newRole = guild.GetRole(roleId);
+                            DiscordRole oldRole = guild.GetRole(roles[currentRoleIndex - 1]?.RoleId ?? 0);
+                            await member.GrantRoleAsync(newRole);
+                            await member.RevokeRoleAsync(oldRole);
+                        }
+                        catch { }
+                    }
+                }
+
                 var list = db.Table<SQLiteData>().ToList();
                 if (list.Any(f => f.Id == $"{guildId}/{userId}"))
                 {
