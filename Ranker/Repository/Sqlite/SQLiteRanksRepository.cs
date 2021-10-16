@@ -119,20 +119,20 @@ namespace Ranker
         {
             return Task.Run(async () =>
             {
-
-                if (guild != null)
+                if (newRank.Xp >= newRank.NextXp)
                 {
-                    if (newRank.Xp >= newRank.NextXp)
+                    newRank.Level += 1;
+                    newRank.Xp -= newRank.NextXp;
+                    while (newRank.Xp >= newRank.NextXp)
                     {
                         newRank.Level += 1;
                         newRank.Xp -= newRank.NextXp;
-                        while (newRank.Xp >= newRank.NextXp)
-                        {
-                            newRank.Level += 1;
-                            newRank.Xp -= newRank.NextXp;
-                        }
-                        newRank.NextXp = Convert.ToUInt64(5 * Math.Pow(newRank.Level, 2) + (50 * (float)newRank.Level) + 100);
                     }
+                    newRank.NextXp = Convert.ToUInt64(5 * Math.Pow(newRank.Level, 2) + (50 * (float)newRank.Level) + 100);
+                }
+
+                if (guild != null)
+                {
                     try
                     {
                         List<Role> roles = await _database.Roles.GetAsync(guild.Id);
