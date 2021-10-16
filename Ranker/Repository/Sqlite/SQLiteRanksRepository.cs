@@ -148,7 +148,7 @@ namespace Ranker
                                 await member.GrantRoleAsync(newRole);
                                 if (filteredRoles.Count() > 1)
                                 {
-                                    DiscordRole oldRole = guild.GetRole(filteredRoles.ElementAt(1));
+                                    DiscordRole oldRole = guild.GetRole(filteredRoles.ElementAt(1).RoleId);
                                     await member.RevokeRoleAsync(oldRole);
                                 }
                             }
