@@ -132,19 +132,26 @@ namespace Ranker
                             newRank.Xp -= newRank.NextXp;
                         }
                         newRank.NextXp = Convert.ToUInt64(5 * Math.Pow(newRank.Level, 2) + (50 * (float)newRank.Level) + 100);
-                        try
-                        {
-                            List<Role> roles = await _database.Roles.GetAsync(guild.Id);
-                            int currentRoleIndex = roles.FindIndex(x => x.Level == newRank.Level);
-                            ulong roleId = roles[currentRoleIndex]?.RoleId ?? 0;
-                            DiscordMember member = await guild.GetMemberAsync(userId);
-                            DiscordRole newRole = guild.GetRole(roleId);
-                            DiscordRole oldRole = guild.GetRole(roles[currentRoleIndex - 1]?.RoleId ?? 0);
-                            await member.GrantRoleAsync(newRole);
-                            await member.RevokeRoleAsync(oldRole);
-                        }
-                        catch { }
                     }
+                    try
+                    {
+                        List<Role> roles = await _database.Roles.GetAsync(guild.Id);
+                        var filteredRoles = roles.Where(x => x.Level <= newRank.Level).OrderByDescending(x => x.Level);
+                        if (filteredRoles.Count != 0)
+                        {
+                            var selectedRole = filteredRoles[0];
+                            ulong roleId = selectedRole.RoleId;
+                            DiscordMember member = await guild.GetMemberAsync(userId);
+                            if (!member.Roles.Any(f => f.Id == roleId))
+                            {
+                                DiscordRole newRole = guild.GetRole(roleId);
+                                DiscordRole oldRole = guild.GetRole(roles[currentRoleIndex - 1]?.RoleId ?? 0);
+                                await member.GrantRoleAsync(newRole);
+                                await member.RevokeRoleAsync(oldRole);
+                            }
+                        }
+                    }
+                    catch { }
                 }
 
                 var list = db.Table<SQLiteData>().ToList();
