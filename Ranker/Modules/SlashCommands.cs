@@ -220,7 +220,7 @@ namespace Ranker
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            if ((max >= min) && (min > -1) && (max > -1))
+            if ((max >= min) && (min > -1) && (max > -1) && (min < int.MaxValue)  && (max < int.MaxValue))
             {
                 Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
                 settings.MinRange = Convert.ToInt32(min);
