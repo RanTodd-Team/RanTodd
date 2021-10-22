@@ -4,7 +4,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/ranker-team/ranker/badge)](https://www.codefactor.io/repository/github/ranker-team/ranker)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/Ranker-Team/Ranker.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Ranker-Team/Ranker/alerts/)
 
-Ranker is a Discord ranking bot originally designed for Microsoft Community. It offers from a simple rank card to a complex leaderboard.
+Ranker is a Discord ranking bot It offers from a simple rank card to a complex leaderboard.
 
 # How to self-host?
 You can get started [here](/docs/get-started/ddev.md).
