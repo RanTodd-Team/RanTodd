@@ -17,10 +17,7 @@
     <PackageReference Include="DSharpPlus.SlashCommands" Version="4.2.0-nightly-01026" />
     <PackageReference Include="DSharpPlus.CommandsNext" Version="4.2.0-nightly-01026" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="DSharpPlus.CommandsNext" />
-    <None Remove="sqlite-net-pcl" />
+	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
     <None Update="config.json">
