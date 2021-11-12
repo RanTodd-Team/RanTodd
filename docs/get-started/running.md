@@ -21,7 +21,7 @@ This method assumes you've already installed Docker Compose. If you haven't, vis
    **Note:** Should you wish to rebuild the bot, add `--build` to the previous command.
 
 ## Standalone
-You'll need .NET 5 SDK for this method. You can download the latest version [here](https://dotnet.microsoft.com/download/dotnet/5.0).
+You'll need .NET 6 SDK for this method. You can download the latest version [here](https://dotnet.microsoft.com/download/dotnet/6.0).
 
 1. Add an environment variable named `RANTODD_TOKEN` with a value of your bot token you received in **step 8, Set up a bot account**, do the same with `RANTODD_CLIENT_SECRET` but with your bot client secret.
    Please note that you may need to restart or log out for this change to take effect.
