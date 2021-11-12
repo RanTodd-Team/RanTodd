@@ -5,9 +5,9 @@
 2. Rename `config.example.json` to `config.json`.
 3. Open the `config.json` file.
 4. Modify the file to suit your needs
-   - **Website:** Edit the `Domain` and `ClientId` JSON field to your website domain.
+   - **Website:** Edit the `Domain` and `ClientId` JSON fields to your website domain.
    - **Testing or one-server scenario:** Edit the `GuildId` JSON field to your server ID.
-   - Command prefix.
+   - **`rank` command prefixes:** Edit the `Prefixes` JSON field to your liking.
 5. Continue with [Docker](#docker) or [standalone program](#standalone).
 
 ## Docker
