@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
+﻿using System.IO;
 using System.Numerics;
-using System.Threading.Tasks;
-using DSharpPlus.SlashCommands;
-using DSharpPlus.SlashCommands.Attributes;
 using DSharpPlus.Entities;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using DSharpPlus;
-using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
 namespace RanTodd
@@ -82,14 +73,19 @@ namespace RanTodd
                 image.Mutate(x => x.Fill(Color.White, paths));
                 image.Mutate(x => x.Fill(Color.FromRgb(0, 166, 234), paths2));
 
-                using (WebClient webClient = new WebClient())
+                using (HttpClient httpClient = new HttpClient())
                 {
-                    var propic = Image.Load(webClient.DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
+                    HttpResponseMessage response;
                     try
                     {
-                        propic = Image.Load(webClient.DownloadData(pfpUrl));
+                        response = await httpClient.GetAsync(pfpUrl);
                     }
-                    catch { }
+                    catch 
+                    {
+                        response = await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png");
+                    }
+
+                    var propic = Image.Load(await response.Content.ReadAsByteArrayAsync());
 
                     propic.Mutate(x => x.Resize(new ResizeOptions()
                     {
@@ -200,14 +196,19 @@ namespace RanTodd
 
                     image.Mutate(x => x.DrawText(maxXp.ToString(), font4, Color.White, new Point(934 - (int)measure5.Width - 18, 190)));
 
-                    using (WebClient webClient = new WebClient())
+                    using (HttpClient httpClient = new HttpClient())
                     {
-                        var propic = Image.Load(webClient.DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
+                        HttpResponseMessage response;
                         try
                         {
-                            propic = Image.Load(webClient.DownloadData(pfpUrl));
+                            response = await httpClient.GetAsync(pfpUrl);
                         }
-                        catch { }
+                        catch
+                        {
+                            response = await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png");
+                        }
+
+                        var propic = Image.Load(await response.Content.ReadAsByteArrayAsync());
 
                         propic.Mutate(x => x.Resize(new ResizeOptions()
                         {
