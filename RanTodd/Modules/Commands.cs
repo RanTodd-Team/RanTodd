@@ -80,7 +80,7 @@ namespace RanTodd
                     {
                         response = await httpClient.GetAsync(pfpUrl);
                     }
-                    catch 
+                    catch
                     {
                         response = await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png");
                     }

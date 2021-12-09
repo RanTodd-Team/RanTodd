@@ -15,7 +15,8 @@
         {
             try
             {
-                if (!string.IsNullOrEmpty(Request.Headers["Code"])) { 
+                if (!string.IsNullOrEmpty(Request.Headers["Code"]))
+                {
                     using (HttpClient client = new())
                     {
                         client.DefaultRequestHeaders.Authorization =
@@ -50,7 +51,8 @@
                             return Ok(JsonConvert.SerializeObject(ready));
                         }
                     }
-            } else
+                }
+                else
                 {
                     using (HttpClient client = new())
                     {
@@ -62,12 +64,13 @@
                         string responseJson = await response.Content.ReadAsStringAsync();
                         JObject jsonParsed = JObject.Parse(responseJson);
 
-                        return Ok(new Dictionary<string, string>(){
+                        return Ok(
+                            new Dictionary<string, string>(){
                             { "id", jsonParsed["id"].Value<string>() },
                             { "name", jsonParsed["name"].Value<string>() },
                             { "icon", jsonParsed["icon"].Value<string>() },
-                        });
-
+                            }
+                        );
                     }
                 }
             }

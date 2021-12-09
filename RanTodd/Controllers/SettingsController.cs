@@ -29,7 +29,8 @@ namespace RanTodd
 
                     bool managesGuild = (ulong.Parse(jsonParsed.ToList().Find(x => x["id"].Value<string>() == guildId.ToString())["permissions"].Value<string>()) & 0x0000000020) == 0x0000000020;
 
-                   if(managesGuild) {
+                    if (managesGuild)
+                    {
                         using (StreamReader stream = new StreamReader(Request.Body))
                         {
                             JObject jsonParsedBody = JObject.Parse(await stream.ReadToEndAsync());
@@ -58,12 +59,13 @@ namespace RanTodd
 
                             return Ok(settings);
                         }
-                    } else
+                    }
+                    else
                     {
                         return Unauthorized();
                     }
                 }
-                }
+            }
             catch
             {
                 return BadRequest();

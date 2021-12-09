@@ -26,7 +26,8 @@
                         { "scope", "identify guilds" }
                     };
 
-                    using (FormUrlEncodedContent requestContent = new FormUrlEncodedContent(dictionary)) {
+                    using (FormUrlEncodedContent requestContent = new FormUrlEncodedContent(dictionary))
+                    {
                         var response = await client.PostAsync($"https://discord.com/api/v9/oauth2/token", requestContent);
                         string responseJson = await response.Content.ReadAsStringAsync();
                         return Ok(responseJson);

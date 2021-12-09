@@ -24,7 +24,7 @@ namespace RanTodd
             }
             Rank currentUserRank = await _database.Ranks.GetAsync(ctx.User.Id, ctx.Guild.Id);
             Rank rank = await _database.Ranks.GetAsync(user.Id, ctx.Guild.Id);
-            if (rank.Xp > 0) 
+            if (rank.Xp > 0)
             {
                 MemoryStream stream;
                 if (currentUserRank.Fleuron)
@@ -42,7 +42,7 @@ namespace RanTodd
                 }
                 catch
                 { }
-            } 
+            }
             else if (user.Id == ctx.User.Id)
                 await ctx.RespondAsync("You aren't ranked yet. Send some messages first, then try again.");
             else

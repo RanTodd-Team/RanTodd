@@ -27,13 +27,14 @@ namespace RanTodd
             }
             Rank currentUserRank = await _database.Ranks.GetAsync(ctx.User.Id, ctx.Guild.Id);
             Rank rank = await _database.Ranks.GetAsync(user.Id, ctx.Guild.Id);
-            if (rank.Xp > 0) 
+            if (rank.Xp > 0)
             {
                 MemoryStream stream;
                 if (currentUserRank.Fleuron)
                 {
                     stream = await Commands.RankFleuron(_database, ctx.Guild, user, rank);
-                } else
+                }
+                else
                 {
                     stream = await Commands.RankZeealeid(_database, ctx.Guild, user, rank);
                 }
@@ -43,15 +44,16 @@ namespace RanTodd
                 builder.AddFile("rank.png", stream);
 
                 await ctx.EditResponseAsync(builder);
-            } 
-            else if (user.Id == ctx.User.Id) 
+            }
+            else if (user.Id == ctx.User.Id)
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("You aren't ranked yet. Send some messages first, then try again."));
             else
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("This member isn't ranked yet."));
         }
 
         [ContextMenu(ApplicationCommandType.UserContextMenu, "Rank")]
-        public async Task RankContext(ContextMenuContext ctx) {
+        public async Task RankContext(ContextMenuContext ctx)
+        {
             await ctx.CreateResponseAsync(
                 InteractionResponseType.DeferredChannelMessageWithSource,
                 new DiscordInteractionResponseBuilder().AsEphemeral(true));
@@ -60,7 +62,7 @@ namespace RanTodd
             Rank rank = await _database.Ranks.GetAsync(ctx.TargetMember.Id, ctx.Guild.Id);
             if (rank.Xp > 0)
             {
-                 MemoryStream stream;
+                MemoryStream stream;
                 if (currentUserRank.Fleuron)
                 {
                     stream = await Commands.RankFleuron(_database, ctx.Guild, ctx.TargetMember, rank);
@@ -88,7 +90,8 @@ namespace RanTodd
             {
                 await _database.Roles.RemoveAsync(ctx.Guild.Id, (ulong)level);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role for level " + level.ToString() + " deconfigured!"));
-            } else
+            }
+            else
             {
                 await _database.Roles.UpsertAsync(ctx.Guild.Id, (ulong)level, role.Id, role.Name);
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Role for level " + level.ToString() + " configured!"));
@@ -108,7 +111,8 @@ namespace RanTodd
             {
                 rank.Fleuron = true;
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Flueron's style enabled!"));
-            } else
+            }
+            else
             {
                 rank.Fleuron = false;
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Flueron's style disabled!"));
@@ -127,7 +131,8 @@ namespace RanTodd
             if (Uri.IsWellFormedUriString(domain, UriKind.Absolute))
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent(domain + "/leaderboard/" + ctx.Guild.Id));
-            } else
+            }
+            else
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Leaderboard setup not completed!"));
             }
@@ -208,7 +213,7 @@ namespace RanTodd
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            if ((max >= min) && (min > -1) && (max > -1) && (min < int.MaxValue)  && (max < int.MaxValue))
+            if ((max >= min) && (min > -1) && (max > -1) && (min < int.MaxValue) && (max < int.MaxValue))
             {
                 Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
                 settings.MinRange = Convert.ToInt32(min);
@@ -216,7 +221,8 @@ namespace RanTodd
                 await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
 
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Range updated successfully!"));
-            } else
+            }
+            else
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Max has to be bigger or equal to min! (also, both have to be positive and less than 2147483647)"));
             }
@@ -228,11 +234,11 @@ namespace RanTodd
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-                Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
+            Settings settings = await _database.Settings.GetAsync(ctx.Guild.Id);
             settings.ExcludedChannels.Add(channel.Id);
-                await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
+            await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
 
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Channel excluded successfully!"));
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Channel excluded successfully!"));
         }
 
         [SlashCommand("unexclude", "Unexcludes a channel.")]
@@ -247,7 +253,8 @@ namespace RanTodd
                 await _database.Settings.UpsertAsync(ctx.Guild.Id, settings);
 
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Channel unexcluded successfully!"));
-            } else
+            }
+            else
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("The channel is not excluded!"));
             }

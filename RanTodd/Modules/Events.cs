@@ -39,14 +39,15 @@ namespace RanTodd
                 try
                 {
                     await _database.Roles.UpsertAsync(e.Guild.Id, role.Level, role.RoleId, e.Guild.GetRole(role.RoleId).Name);
-                } catch
+                }
+                catch
                 {
                     await _database.Roles.RemoveAsync(e.Guild.Id, role.Level);
                 }
             });
         }
 
-    private async Task Client_GuildMemberUpdated(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs e)
+        private async Task Client_GuildMemberUpdated(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberUpdateEventArgs e)
         {
             if (e.Member.IsBot) return;
 
@@ -103,24 +104,26 @@ namespace RanTodd
 
             Settings settings = await _database.Settings.GetAsync(e.Guild.Id);
 
-            if (!settings.ExcludedChannels.Contains(e.Channel.Id)) {
-
-            if (e.Message.CreationTimestamp >= rank.LastCreditDate.AddMinutes(1))
+            if (!settings.ExcludedChannels.Contains(e.Channel.Id))
             {
-                ulong newXp = Convert.ToUInt64(new Random().Next(settings.MinRange, settings.MaxRange));
-            rank.Messages += 1;
-                rank.Xp += newXp;
-                rank.TotalXp += newXp;
-                rank.LastCreditDate = e.Message.CreationTimestamp;
+
+                if (e.Message.CreationTimestamp >= rank.LastCreditDate.AddMinutes(1))
+                {
+                    ulong newXp = Convert.ToUInt64(new Random().Next(settings.MinRange, settings.MaxRange));
+                    rank.Messages += 1;
+                    rank.Xp += newXp;
+                    rank.TotalXp += newXp;
+                    rank.LastCreditDate = e.Message.CreationTimestamp;
+                }
             }
-        }
 
             await _database.Ranks.UpsertAsync(e.Author.Id, e.Guild.Id, rank, e.Guild);
         }
 
         private async Task Client_ComponentInteractionCreated(DiscordClient sender, DSharpPlus.EventArgs.ComponentInteractionCreateEventArgs e)
         {
-            if (sender.CurrentApplication.Owners.ToList().Contains(e.User) || (await e.Guild.GetMemberAsync(e.User.Id)).Permissions.HasPermission(Permissions.ManageGuild)) {
+            if (sender.CurrentApplication.Owners.ToList().Contains(e.User) || (await e.Guild.GetMemberAsync(e.User.Id)).Permissions.HasPermission(Permissions.ManageGuild))
+            {
                 if (e.Id == "continueMEE6")
                 {
                     await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. Even if it may appear to be stuck, we're still working. We will notify you when we're done. You can check console for the logged pages if you're self-hosting."));
@@ -157,7 +160,7 @@ namespace RanTodd
                                             Rank rank = new Rank()
                                             {
                                                 LastCreditDate = DateTimeOffset.MinValue, // We just empty it
-                                            Messages = player["message_count"].Value<ulong>(),
+                                                Messages = player["message_count"].Value<ulong>(),
                                                 Xp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>(),
                                                 NextXp = player["detailed_xp"].Value<JArray>()[1].Value<ulong>(),
                                                 Level = player["level"].Value<ulong>(),
@@ -179,7 +182,9 @@ namespace RanTodd
                                     {
                                         hasPlayers = false;
                                     }
-                                } else {
+                                }
+                                else
+                                {
                                     hasPlayers = false;
                                 }
                             }
@@ -188,7 +193,8 @@ namespace RanTodd
                     }
 
                     await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
-                } else
+                }
+                else
                 {
                     if (e.Id.StartsWith("continueUser"))
                     {
@@ -220,7 +226,7 @@ namespace RanTodd
                         ulong totalXp = newRank.TotalXp;
                         ulong level = 0;
                         ulong min = 0;
-                        while(totalXp > min)
+                        while (totalXp > min)
                         {
                             Console.WriteLine("tx: " + totalXp.ToString() + " - min: " + min.ToString());
                             min = Convert.ToUInt64(5 * Math.Pow(level, 2) + (50 * (float)level) + 100);
@@ -254,4 +260,3 @@ namespace RanTodd
         }
     }
 }
-    
