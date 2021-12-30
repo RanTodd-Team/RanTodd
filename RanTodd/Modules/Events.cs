@@ -124,80 +124,80 @@ namespace RanTodd
         {
             if (sender.CurrentApplication.Owners.ToList().Contains(e.User) || (await e.Guild.GetMemberAsync(e.User.Id)).Permissions.HasPermission(Permissions.ManageGuild))
             {
-                if (e.Id == "continueMEE6")
+                switch (e.Id)
                 {
-                    await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. Even if it may appear to be stuck, we're still working. We will notify you when we're done. You can check console for the logged pages if you're self-hosting."));
+                    case "continueMEE6":
+                        await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. Even if it may appear to be stuck, we're still working. We will notify you when we're done. You can check console for the logged pages if you're self-hosting."));
 
-                    await _database.Roles.Empty(e.Guild.Id);
-                    await _database.Ranks.Empty(e.Guild.Id);
-                    bool hasPlayers = true;
-                    int times = 0;
-                    while (hasPlayers)
-                    {
-                        try
+                        await _database.Roles.Empty(e.Guild.Id);
+                        await _database.Ranks.Empty(e.Guild.Id);
+                        bool hasPlayers = true;
+                        int times = 0;
+                        while (hasPlayers)
                         {
-                            using (HttpClient client = new())
+                            try
                             {
-                                var response = await client.GetAsync("https://mee6.xyz/api/plugins/levels/leaderboard/" + e.Guild.Id.ToString() + "?page=" + times.ToString());
-                                string responseJson = await response.Content.ReadAsStringAsync();
-                                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                                using (HttpClient client = new())
                                 {
-                                    JObject jsonParsed = JObject.Parse(responseJson);
-                                    if (times == 0)
+                                    var response = await client.GetAsync("https://mee6.xyz/api/plugins/levels/leaderboard/" + e.Guild.Id.ToString() + "?page=" + times.ToString());
+                                    string responseJson = await response.Content.ReadAsStringAsync();
+                                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
                                     {
-                                        jsonParsed["role_rewards"].Value<JArray>().ToList().ForEach(role =>
+                                        JObject jsonParsed = JObject.Parse(responseJson);
+                                        if (times == 0)
                                         {
-                                            _database.Roles.UpsertAsync(e.Guild.Id, role["rank"].Value<ulong>(), ulong.Parse(role["role"]["id"].Value<string>()), role["role"]["name"].Value<string>());
-                                        });
-                                    }
-                                    if (jsonParsed["players"].Value<JArray>().Count != 0)
-                                    {
-                                        Console.WriteLine(jsonParsed["players"].Value<JArray>().Count);
-                                        jsonParsed["players"].Value<JArray>().ToList().ForEach(player =>
-                                        {
-                                            string userId = player["id"].Value<string>();
-                                            string avatarHash = player["avatar"].Value<string>();
-                                            Rank rank = new Rank()
+                                            jsonParsed["role_rewards"].Value<JArray>().ToList().ForEach(role =>
                                             {
-                                                LastCreditDate = DateTimeOffset.MinValue, // We just empty it
-                                                Messages = player["message_count"].Value<ulong>(),
-                                                Xp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>(),
-                                                NextXp = player["detailed_xp"].Value<JArray>()[1].Value<ulong>(),
-                                                Level = player["level"].Value<ulong>(),
-                                                TotalXp = player["xp"].Value<ulong>(),
-                                                Guild = e.Guild.Id,
-                                                User = ulong.Parse(userId),
-                                                Username = player["username"].Value<string>(),
-                                                Discriminator = player["discriminator"].Value<string>(),
-                                                Avatar = avatarHash != "" ? "https://cdn.discordapp.com/avatars/" + userId + "/" + avatarHash + ".png?size=1024" : "https://cdn.discordapp.com/embed/avatars/1.png",
-                                                Fleuron = false
-                                            };
-                                            _database.Ranks.UpsertAsync(ulong.Parse(userId), e.Guild.Id, rank, e.Guild);
-                                        });
+                                                _database.Roles.UpsertAsync(e.Guild.Id, role["rank"].Value<ulong>(), ulong.Parse(role["role"]["id"].Value<string>()), role["role"]["name"].Value<string>());
+                                            });
+                                        }
+                                        if (jsonParsed["players"].Value<JArray>().Count != 0)
+                                        {
+                                            Console.WriteLine(jsonParsed["players"].Value<JArray>().Count);
+                                            jsonParsed["players"].Value<JArray>().ToList().ForEach(player =>
+                                            {
+                                                string userId = player["id"].Value<string>();
+                                                string avatarHash = player["avatar"].Value<string>();
+                                                Rank rank = new Rank()
+                                                {
+                                                    LastCreditDate = DateTimeOffset.MinValue, // We just empty it
+                                                    Messages = player["message_count"].Value<ulong>(),
+                                                    Xp = player["detailed_xp"].Value<JArray>()[0].Value<ulong>(),
+                                                    NextXp = player["detailed_xp"].Value<JArray>()[1].Value<ulong>(),
+                                                    Level = player["level"].Value<ulong>(),
+                                                    TotalXp = player["xp"].Value<ulong>(),
+                                                    Guild = e.Guild.Id,
+                                                    User = ulong.Parse(userId),
+                                                    Username = player["username"].Value<string>(),
+                                                    Discriminator = player["discriminator"].Value<string>(),
+                                                    Avatar = avatarHash != "" ? "https://cdn.discordapp.com/avatars/" + userId + "/" + avatarHash + ".png?size=1024" : "https://cdn.discordapp.com/embed/avatars/1.png",
+                                                    Fleuron = false
+                                                };
+                                                _database.Ranks.UpsertAsync(ulong.Parse(userId), e.Guild.Id, rank, e.Guild);
+                                            });
 
-                                        Console.WriteLine("Migrated page number " + times + " in " + e.Guild.Name + ".");
-                                        times++;
+                                            Console.WriteLine("Migrated page number " + times + " in " + e.Guild.Name + ".");
+                                            times++;
+                                        }
+                                        else
+                                        {
+                                            hasPlayers = false;
+                                        }
                                     }
                                     else
                                     {
                                         hasPlayers = false;
                                     }
                                 }
-                                else
-                                {
-                                    hasPlayers = false;
-                                }
                             }
+                            catch { }
                         }
-                        catch { }
-                    }
 
-                    await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
-                }
-                else
-                {
-                    if (e.Id.StartsWith("continueUser"))
-                    {
+                        await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
+
+                        break;
+
+                    case "continueUser":
                         await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we migrate the data. This shouldn't take long."));
                         ulong oldUser = ulong.Parse(e.Id.Split("-")[1]);
                         ulong newUser = ulong.Parse(e.Id.Split("-")[2]);
@@ -214,9 +214,9 @@ namespace RanTodd
                         }, e.Guild);
                         await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, oldRank, e.Guild);
                         await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished migrating the data!"));
-                    }
-                    else if (e.Id.StartsWith("continueMerge"))
-                    {
+                        break;
+
+                    case "continueMerge":
                         await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we merge the data. This shouldn't take long."));
                         ulong oldUser = ulong.Parse(e.Id.Split("-")[1]);
                         ulong newUser = ulong.Parse(e.Id.Split("-")[2]);
@@ -246,15 +246,11 @@ namespace RanTodd
                         }, e.Guild);
                         await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, newRank, e.Guild);
                         await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished merging the data!"));
+                        break;
 
-                    }
-                    else
-                    {
-
-                    }
-                    {
+                    default:
                         await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Migration/merge cancelled."));
-                    }
+                        break;
                 }
             }
         }
