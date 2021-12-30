@@ -218,12 +218,12 @@ namespace RanTodd
 
                     case "continueMerge":
                         await e.Interaction.CreateResponseAsync(InteractionResponseType.UpdateMessage, new DiscordInteractionResponseBuilder().WithContent("Please wait while we merge the data. This shouldn't take long."));
-                        ulong oldUser = ulong.Parse(e.Id.Split("-")[1]);
-                        ulong newUser = ulong.Parse(e.Id.Split("-")[2]);
-                        Rank oldRank = await _database.Ranks.GetAsync(oldUser, e.Guild.Id);
-                        Rank newRank = await _database.Ranks.GetAsync(newUser, e.Guild.Id);
-                        newRank.TotalXp += oldRank.TotalXp;
-                        ulong totalXp = newRank.TotalXp;
+                        ulong oldUser2 = ulong.Parse(e.Id.Split("-")[1]);
+                        ulong newUser2 = ulong.Parse(e.Id.Split("-")[2]);
+                        Rank oldRank2 = await _database.Ranks.GetAsync(oldUser2, e.Guild.Id);
+                        Rank newRank2 = await _database.Ranks.GetAsync(newUser2, e.Guild.Id);
+                        newRank2.TotalXp += oldRank2.TotalXp;
+                        ulong totalXp = newRank2.TotalXp;
                         ulong level = 0;
                         ulong min = 0;
                         while (totalXp > min)
@@ -237,14 +237,14 @@ namespace RanTodd
                             }
                         }
                         level++;
-                        newRank.Xp = totalXp;
-                        newRank.Level = level;
-                        await _database.Ranks.UpsertAsync(oldUser, e.Guild.Id, new Rank()
+                        newRank2.Xp = totalXp;
+                        newRank2.Level = level;
+                        await _database.Ranks.UpsertAsync(oldUser2, e.Guild.Id, new Rank()
                         {
                             Guild = e.Guild.Id,
-                            User = oldUser
+                            User = oldUser2
                         }, e.Guild);
-                        await _database.Ranks.UpsertAsync(newUser, e.Guild.Id, newRank, e.Guild);
+                        await _database.Ranks.UpsertAsync(newUser2, e.Guild.Id, newRank2, e.Guild);
                         await e.Interaction.EditOriginalResponseAsync(new DiscordWebhookBuilder().WithContent("We finished merging the data!"));
                         break;
 
