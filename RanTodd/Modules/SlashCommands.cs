@@ -138,17 +138,14 @@ namespace RanTodd
             }
         }
 
-        /*
-         * Kinda pointless tbh
-         * [SlashCommand("easter", "egg")]
-         * public async Task EasterCommand(InteractionContext ctx)
-         * {
-         *     await ctx.CreateResponseAsync(
-         *         InteractionResponseType.DeferredChannelMessageWithSource,
-         *         new DiscordInteractionResponseBuilder().AsEphemeral(true));
-         *     await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("https://www.youtube.com/watch?v=CBpSGsT7L6s"));
-         * }
-        */
+          [SlashCommand("easter", "egg")]
+          public async Task EasterCommand(InteractionContext ctx)
+          {
+              await ctx.CreateResponseAsync(
+                  InteractionResponseType.DeferredChannelMessageWithSource,
+                  new DiscordInteractionResponseBuilder().AsEphemeral(true));
+              await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("https://www.youtube.com/watch?v=CBpSGsT7L6s"));
+          }
 
         [SlashCommandGroup("migrate", "Migrates data.")]
         [RequireBotOwnerOrAdmin]
