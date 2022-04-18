@@ -16,6 +16,7 @@ using SixLabors.ImageSharp.Processing;
 using DSharpPlus;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using System.Net.Http;
 
 namespace RanTodd
 {
@@ -82,12 +83,12 @@ namespace RanTodd
                 image.Mutate(x => x.Fill(Color.White, paths));
                 image.Mutate(x => x.Fill(Color.FromRgb(0, 166, 234), paths2));
 
-                using (WebClient webClient = new WebClient())
+                using (HttpClient httpClient = new HttpClient())
                 {
-                    var propic = Image.Load(webClient.DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
+                    var propic = Image.Load(await (await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png")).Content.ReadAsByteArrayAsync());
                     try
                     {
-                        propic = Image.Load(webClient.DownloadData(pfpUrl));
+                        propic = Image.Load(await (await httpClient.GetAsync(pfpUrl)).Content.ReadAsByteArrayAsync());
                     }
                     catch { }
 
@@ -200,12 +201,12 @@ namespace RanTodd
 
                     image.Mutate(x => x.DrawText(maxXp.ToString(), font4, Color.White, new Point(934 - (int)measure5.Width - 18, 190)));
 
-                    using (WebClient webClient = new WebClient())
+                    using (HttpClient httpClient = new HttpClient())
                     {
-                        var propic = Image.Load(webClient.DownloadData("https://cdn.discordapp.com/embed/avatars/1.png"));
+                        var propic = Image.Load(await (await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png")).Content.ReadAsByteArrayAsync());
                         try
                         {
-                            propic = Image.Load(webClient.DownloadData(pfpUrl));
+                            propic = Image.Load(await (await httpClient.GetAsync(pfpUrl)).Content.ReadAsByteArrayAsync());
                         }
                         catch { }
 

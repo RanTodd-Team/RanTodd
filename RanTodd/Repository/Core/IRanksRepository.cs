@@ -25,7 +25,9 @@ namespace RanTodd
         /// <param name="guildId">The guild ID.</param>
         /// <param name="newRank">The new rank.</param>
         /// <param name="newRank">The guild (optional but recommended).</param>
+        #nullable enable
         Task UpsertAsync(ulong userId, ulong guildId, Rank newRank, DiscordGuild? guild);
+        #nullable restore
 
         /// <summary>
         /// Empties ranks.

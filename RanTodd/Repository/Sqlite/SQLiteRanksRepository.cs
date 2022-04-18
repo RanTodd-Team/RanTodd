@@ -115,7 +115,9 @@ namespace RanTodd
             });
         }
 
+        #nullable enable
         public Task UpsertAsync(ulong userId, ulong guildId, Rank newRank, DiscordGuild? guild)
+        #nullable restore
         {
             return Task.Run(async () =>
             {
