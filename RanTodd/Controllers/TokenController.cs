@@ -1,14 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RanTodd
+﻿namespace RanTodd
 {
     [Route("[controller]")]
     public class TokenController : Controller
@@ -36,7 +26,8 @@ namespace RanTodd
                         { "scope", "identify guilds" }
                     };
 
-                    using (FormUrlEncodedContent requestContent = new FormUrlEncodedContent(dictionary)) {
+                    using (FormUrlEncodedContent requestContent = new FormUrlEncodedContent(dictionary))
+                    {
                         var response = await client.PostAsync($"https://discord.com/api/v9/oauth2/token", requestContent);
                         string responseJson = await response.Content.ReadAsStringAsync();
                         return Ok(responseJson);

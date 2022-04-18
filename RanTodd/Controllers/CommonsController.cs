@@ -1,15 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RanTodd
+﻿namespace RanTodd
 {
     [Route("[controller]")]
     public class CommonsController : Controller
@@ -26,7 +15,8 @@ namespace RanTodd
         {
             try
             {
-                if (!String.IsNullOrEmpty(Request.Headers["Code"])) { 
+                if (!string.IsNullOrEmpty(Request.Headers["Code"]))
+                {
                     using (HttpClient client = new())
                     {
                         client.DefaultRequestHeaders.Authorization =
@@ -61,7 +51,8 @@ namespace RanTodd
                             return Ok(JsonConvert.SerializeObject(ready));
                         }
                     }
-            } else
+                }
+                else
                 {
                     using (HttpClient client = new())
                     {
@@ -73,12 +64,13 @@ namespace RanTodd
                         string responseJson = await response.Content.ReadAsStringAsync();
                         JObject jsonParsed = JObject.Parse(responseJson);
 
-                        return Ok(new Dictionary<string, string>(){
+                        return Ok(
+                            new Dictionary<string, string>(){
                             { "id", jsonParsed["id"].Value<string>() },
                             { "name", jsonParsed["name"].Value<string>() },
                             { "icon", jsonParsed["icon"].Value<string>() },
-                        });
-
+                            }
+                        );
                     }
                 }
             }

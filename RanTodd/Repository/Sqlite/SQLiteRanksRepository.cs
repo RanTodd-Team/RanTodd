@@ -1,22 +1,12 @@
 ﻿using DSharpPlus.Entities;
 using SQLite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RanTodd
 {
     public class SQLiteRanksRepository : IRanksRepository
     {
-        private readonly IRanToddRepository _database;
-
-        public SQLiteRanksRepository(IRanToddRepository database)
-        {
-            _database = database;
-        }
-
         private SQLiteConnection db;
+        private SQLiteRolesRepository _rolesRepository;
 
         #region Data
         [Table("RankData")]
@@ -92,6 +82,7 @@ namespace RanTodd
         public SQLiteRanksRepository(SQLiteConnection db)
         {
             this.db = db;
+            _rolesRepository = new SQLiteRolesRepository(db);
             db.CreateTable<SQLiteData>();
         }
 
@@ -137,7 +128,7 @@ namespace RanTodd
                 {
                     try
                     {
-                        List<Role> roles = await _database.Roles.GetAsync(guild.Id);
+                        List<Role> roles = await _rolesRepository.GetAsync(guild.Id);
                         var filteredRoles = roles.Where(x => x.Level <= newRank.Level).OrderByDescending(x => x.Level);
                         if (filteredRoles.Count() != 0)
                         {

@@ -1,11 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 namespace RanTodd
 {
@@ -21,7 +14,7 @@ namespace RanTodd
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<IActionResult> Get(ulong id, [FromQuery]int page = 0)
+        public async Task<IActionResult> Get(ulong id, [FromQuery] int page = 0)
         {
             try
             {
@@ -36,8 +29,8 @@ namespace RanTodd
                     JToken jsonParsed = JToken.Parse(responseJson);
                     IEnumerable<Rank> ranks = (await _database.Ranks.GetAsync(id))
                         .OrderByDescending(f => f.TotalXp)
-                        .Skip(page * 100)
-                        .Take(100);
+                        .Chunk(100)
+                        .ElementAt(page);
 
                     Settings settings = await _database.Settings.GetAsync(id);
 
@@ -58,28 +51,33 @@ namespace RanTodd
                             JArray jsonParsed2 = JArray.Parse(responseJson2);
 
                             managesGuild = (ulong.Parse(jsonParsed2.ToList().Find(x => x["id"].Value<string>() == id.ToString())["permissions"].Value<string>()) & 0x0000000020) == 0x0000000020;
-                        } 
-                        return Ok(new Dictionary<string, object>()
-                    {
-                            { "managesGuild", managesGuild },
-                        {
-                            "guild",
+                        }
+                        return Ok(
                             new Dictionary<string, object>()
                             {
-                                { "name", jsonParsed["name"].Value<string>() },
-                                { "description", jsonParsed["description"].Value<string>() },
-                                { "icon", jsonParsed["icon"].Value<string>() },
-                                { "is_joinable", jsonParsed["rules_channel_id"] != null }
+                                { "managesGuild", managesGuild },
+                                {
+                                    "guild",
+                                    new Dictionary<string, object>()
+                                    {
+                                        { "name", jsonParsed["name"].Value<string>() },
+                                        { "description", jsonParsed["description"].Value<string>() },
+                                        { "icon", jsonParsed["icon"].Value<string>() },
+                                        { "is_joinable", jsonParsed["rules_channel_id"] != null }
+                                    }
+                                },
+                                {
+                                    "settings",
+                                    new Dictionary<string, object>() {
+                                        { "banner", settings.Banner },
+                                        { "minRange", settings.MinRange },
+                                        { "maxRange", settings.MaxRange }
+                                    }
+                                },
+                                { "roles", roles.OrderBy(x => x.Level) },
+                                { "players", ranks }
                             }
-                        },
-                        { "settings", new Dictionary<string, object>() {
-                            { "banner", settings.Banner },
-                            { "minRange", settings.MinRange },
-                            { "maxRange", settings.MaxRange }
-                        }},
-                        { "roles", roles.OrderBy(x => x.Level) },
-                        { "players", ranks }
-                    });
+                        );
                     }
                 }
             }

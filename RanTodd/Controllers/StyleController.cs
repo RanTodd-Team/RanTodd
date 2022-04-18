@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace RanTodd
 {
@@ -36,9 +28,12 @@ namespace RanTodd
                     JObject jsonParsed = JObject.Parse(responseJson);
                     ulong userId = ulong.Parse(jsonParsed["id"].Value<string>());
                     Rank rankCard = await _database.Ranks.GetAsync(userId, guildId);
-                    return Ok(new Dictionary<string, bool>(){
-                        { "fleuron", rankCard.Fleuron }
-                    });
+                    return Ok(
+                        new Dictionary<string, bool>()
+                        {
+                            { "fleuron", rankCard.Fleuron }
+                        }
+                    );
                 }
             }
             catch
@@ -67,9 +62,11 @@ namespace RanTodd
                     {
                         rankCard.Fleuron = JObject.Parse(await stream.ReadToEndAsync())["fleuron"].Value<bool>();
                         await _database.Ranks.UpsertAsync(userId, guildId, rankCard, null);
-                        return Ok(new Dictionary<string, bool>(){
-                        { "fleuron", rankCard.Fleuron }
-                    });
+                        return Ok(
+                            new Dictionary<string, bool>() {
+                                { "fleuron", rankCard.Fleuron }
+                            }
+                        );
                     }
                 }
             }

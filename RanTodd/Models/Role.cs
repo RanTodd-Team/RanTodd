@@ -1,5 +1,4 @@
-﻿using System;
-namespace RanTodd
+﻿namespace RanTodd
 {
     public class Role
     {

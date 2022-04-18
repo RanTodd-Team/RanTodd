@@ -1,34 +1,62 @@
-﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System;
-using System.Diagnostics;
+using Microsoft.Extensions.Hosting;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
-namespace RanTodd
+var builder = WebApplication.CreateBuilder(args);
+
+const string Cors = "_cors";
+
+builder.Services.AddCors(options =>
 {
-    public class Program
-    {
-        static void Main(string[] args)
+    options.AddPolicy(
+        name: Cors,
+        builder =>
         {
-            BuildWebHost(args).Build().Run();
-        }
+            builder
+            .AllowAnyOrigin()
+            .AllowAnyHeader();
+        });
+});
 
-        static IWebHostBuilder BuildWebHost(string[] args)
-        {
-            return WebHost
-                .CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
-        }
-    }
+string folder = "";
+
+if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+    folder = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "RanTodd");
+else
+    folder = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+        ".rantodd");
+
+if (!Directory.Exists(folder))
+{
+    Directory.CreateDirectory(folder);
 }
+
+ConfigJson configJson = JsonConvert.DeserializeObject<ConfigJson>(File.ReadAllText("config.json"));
+IRanToddRepository database = new SQLiteRanToddRepository(Path.Combine(folder, "RanTodd.db"));
+
+builder.Services.AddSingleton(database);
+builder.Services.AddSingleton(configJson);
+
+builder.Services.AddHostedService<BotService>();
+
+builder.Services.AddControllers();
+
+var app = builder.Build();
+
+if (builder.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors(Cors);
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});

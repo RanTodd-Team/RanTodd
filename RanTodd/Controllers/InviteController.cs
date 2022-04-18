@@ -1,11 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace RanTodd.Controllers
 {
@@ -45,10 +38,12 @@ namespace RanTodd.Controllers
                         responseJson = await response.Content.ReadAsStringAsync();
 
                         var code = JToken.Parse(responseJson)["code"].Value<string>();
-                        return Ok(new Dictionary<string, string>()
-                    {
-                        { "url", $"https://discord.gg/{code}" }
-                    });
+                        return Ok(
+                            new Dictionary<string, string>()
+                            {
+                                { "url", $"https://discord.gg/{code}" }
+                            }
+                        );
                     }
                 }
             }

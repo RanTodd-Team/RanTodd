@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
+﻿using System.IO;
 using System.Numerics;
-using System.Threading.Tasks;
-using DSharpPlus.SlashCommands;
-using DSharpPlus.SlashCommands.Attributes;
 using DSharpPlus.Entities;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using DSharpPlus;
-using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Net.Http;
 
@@ -90,7 +81,12 @@ namespace RanTodd
                     {
                         propic = Image.Load(await (await httpClient.GetAsync(pfpUrl)).Content.ReadAsByteArrayAsync());
                     }
-                    catch { }
+                    catch
+                    {
+                        response = await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png");
+                    }
+
+                    var propic = Image.Load(await response.Content.ReadAsByteArrayAsync());
 
                     propic.Mutate(x => x.Resize(new ResizeOptions()
                     {
@@ -208,7 +204,12 @@ namespace RanTodd
                         {
                             propic = Image.Load(await (await httpClient.GetAsync(pfpUrl)).Content.ReadAsByteArrayAsync());
                         }
-                        catch { }
+                        catch
+                        {
+                            response = await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png");
+                        }
+
+                        var propic = Image.Load(await response.Content.ReadAsByteArrayAsync());
 
                         propic.Mutate(x => x.Resize(new ResizeOptions()
                         {
