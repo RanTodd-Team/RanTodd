@@ -83,10 +83,8 @@ namespace RanTodd
                     }
                     catch
                     {
-                        response = await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png");
+                        propic = Image.Load(await (await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png")).Content.ReadAsByteArrayAsync());
                     }
-
-                    var propic = Image.Load(await response.Content.ReadAsByteArrayAsync());
 
                     propic.Mutate(x => x.Resize(new ResizeOptions()
                     {
@@ -206,10 +204,8 @@ namespace RanTodd
                         }
                         catch
                         {
-                            response = await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png");
+                            propic = Image.Load(await (await httpClient.GetAsync("https://cdn.discordapp.com/embed/avatars/1.png")).Content.ReadAsByteArrayAsync());
                         }
-
-                        var propic = Image.Load(await response.Content.ReadAsByteArrayAsync());
 
                         propic.Mutate(x => x.Resize(new ResizeOptions()
                         {
