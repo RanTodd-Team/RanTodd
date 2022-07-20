@@ -10,7 +10,7 @@ You can get started [here](./docs/get-started/ddev.md).
 
 # Contributors
 We'd like to thank our contributors for making this possible. 
-- [@SapphireDisD](https://github.com/SapphireDisD): RanTodd's author + lazy.
+- [@SapphireDisD](https://github.com/SapphireDisD): RanTodd's author.
 - [@dongle-the-gadget](https://github.com/dongle-the-gadget): RanTodd's main dev.
 - [@Ahmed605](https://github.com/Ahmed605): RanTodd's main rank card main developer.
 - [@zeealeid](https://github.com/zeealeid): RanTodd's main rank card main designer.
